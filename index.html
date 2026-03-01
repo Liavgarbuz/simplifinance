@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>SimpliFinance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#f5f3ee;--surface:#fffffe;--surface2:#f5f3ee;--surface3:#ece9e3;
+  --border:#e0dbd2;--border2:#ccc6bb;
+  --text:#1a1814;--text2:#6b6457;--text3:#a09880;
+  --green:#1a6b42;--green-bg:#eef7f1;--green-lt:#b8e6cc;
+  --red:#c0392b;--red-bg:#fdf0ef;--red-lt:#f5c4bf;
+  --amber:#9a6b1a;--amber-bg:#fdf6e8;--amber-lt:#f5dfa0;
+  --blue:#1a4f8a;--blue-bg:#eef3fb;--blue-lt:#bed0f0;
+  --purple:#5a3d8a;--purple-bg:#f3eefb;--purple-lt:#d0c0f0;
+  --shadow:0 1px 4px rgba(0,0,0,0.06),0 2px 10px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 20px rgba(0,0,0,0.09),0 1px 4px rgba(0,0,0,0.04);
+  --shadow-lg:0 8px 40px rgba(0,0,0,0.12),0 2px 8px rgba(0,0,0,0.06);
+  --r:14px;--r2:10px;--r3:7px;
+  --font:'DM Sans',system-ui,sans-serif;
+  --font-d:'DM Serif Display',Georgia,serif;
+  --safe-top: env(safe-area-inset-top);
+  --safe-bot: env(safe-area-inset-bottom);
+}
+html{font-size:15px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+input,select,button{font-family:var(--font);font-size:inherit}
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+input[type=number]{-moz-appearance:textfield}
+button{cursor:pointer}
+::selection{background:var(--green-lt);color:var(--green)}
+
+/* ── SHELL ── */
+.app-shell{display:flex;flex-direction:column;min-height:100dvh}
+
+/* ── MOBILE HEADER ── */
+.mob-header{display:none;position:sticky;top:0;z-index:300;background:var(--text);padding:calc(12px + var(--safe-top)) 16px 12px;align-items:center;justify-content:space-between}
+.mob-brand{font-family:var(--font-d);font-size:18px;color:#fff}
+.mob-menu{background:none;border:none;color:rgba(255,255,255,0.7);font-size:22px;padding:4px 8px;line-height:1}
+
+/* ── DESKTOP LAYOUT ── */
+.desktop-shell{display:flex;flex:1}
+.sidebar{width:232px;background:var(--text);display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;z-index:200;transition:transform 0.25s cubic-bezier(.4,0,.2,1)}
+.sb-brand{padding:24px 20px 18px;border-bottom:1px solid rgba(255,255,255,0.07)}
+.sb-name{font-family:var(--font-d);font-size:19px;color:#fff;letter-spacing:-0.2px}
+.sb-tag{font-size:10px;color:rgba(255,255,255,0.28);letter-spacing:0.12em;text-transform:uppercase;margin-top:2px}
+.sb-nav{flex:1;padding:14px 10px;overflow-y:auto;display:flex;flex-direction:column;gap:1px}
+.ni{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;color:rgba(255,255,255,0.5);font-size:13px;font-weight:500;cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:all 0.15s}
+.ni:hover{color:rgba(255,255,255,0.9);background:rgba(255,255,255,0.06)}
+.ni.on{color:#fff;background:rgba(255,255,255,0.12);font-weight:700}
+.ni-ico{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+.sb-foot{padding:14px 10px;border-top:1px solid rgba(255,255,255,0.07)}
+.user-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;cursor:pointer;transition:background 0.15s}
+.user-row:hover{background:rgba(255,255,255,0.06)}
+.uav{width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.uname{font-size:12px;color:rgba(255,255,255,0.7);font-weight:600}
+.uhint{font-size:10px;color:rgba(255,255,255,0.28)}
+.main-area{margin-left:232px;flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:54px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
+.tb-title{font-family:var(--font-d);font-size:17px;flex:1;color:var(--text)}
+.infl-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:999px;border:1.5px solid var(--border);background:none;font-size:11px;font-weight:700;color:var(--text2);transition:all 0.15s;white-space:nowrap}
+.infl-btn.on{border-color:var(--purple);background:var(--purple-bg);color:var(--purple)}
+.infl-dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.infl-rate-input{width:60px;border:1.5px solid var(--purple);border-radius:var(--r3);background:var(--purple-bg);color:var(--purple);font-size:12px;padding:4px 8px;outline:none;font-weight:700}
+.page{padding:22px 24px 100px;max-width:1060px}
+
+/* ── MOBILE NAV OVERLAY ── */
+.nav-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:199;opacity:0;transition:opacity 0.25s}
+.nav-overlay.show{opacity:1}
+
+/* ── MOBILE BOTTOM NAV ── */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:300;background:var(--surface);border-top:1px solid var(--border);padding:8px 0 calc(8px + var(--safe-bot));box-shadow:0 -4px 20px rgba(0,0,0,0.08)}
+.bnav{display:flex;justify-content:space-around;align-items:center}
+.bni{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 8px;border:none;background:none;color:var(--text3);font-size:10px;font-weight:600;min-width:44px;border-radius:8px;transition:all 0.15s}
+.bni.on{color:var(--green)}
+.bni-ico{font-size:20px;line-height:1}
+
+/* ── SEARCH ── */
+.sw{position:relative}
+.si{background:var(--surface2);border:1.5px solid var(--border);border-radius:999px;padding:6px 14px 6px 32px;font-size:12px;color:var(--text);outline:none;width:220px;transition:all 0.15s}
+.si:focus{border-color:var(--green);background:#fff;box-shadow:0 0 0 3px var(--green-bg);width:240px}
+.s-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--text3);pointer-events:none}
+.sr{position:absolute;top:calc(100%+5px);right:0;width:280px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow-md);z-index:400;max-height:260px;overflow-y:auto}
+.sri{padding:9px 13px;cursor:pointer;border-bottom:1px solid var(--border);transition:background 0.1s}
+.sri:last-child{border-bottom:none}
+.sri:hover{background:var(--surface2)}
+.sri-t{font-size:12.5px;font-weight:600}
+.sri-s{font-size:10.5px;color:var(--text3);margin-top:1px}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;box-shadow:var(--shadow)}
+.card-t{font-family:var(--font-d);font-size:15px;color:var(--text);margin-bottom:2px}
+.card-s{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-bottom:14px}
+.card-h{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+
+/* ── STAT CARDS ── */
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:15px 16px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.stat-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0}
+.stat-l{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.09em;font-weight:700;margin-bottom:5px}
+.stat-v{font-family:var(--font-d);font-size:22px;color:var(--text);line-height:1.1;margin-bottom:3px}
+.stat-v.infl{font-size:14px;color:var(--purple);margin-bottom:2px}
+.stat-m{font-size:10.5px;color:var(--text2)}
+.up{color:var(--green)!important}.dn{color:var(--red)!important}
+.infl-badge{font-size:8px;background:var(--purple-bg);color:var(--purple);border-radius:4px;padding:1px 4px;font-weight:700;margin-left:3px;vertical-align:middle}
+
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.stack{display:flex;flex-direction:column;gap:12px}
+
+/* ── FORM ── */
+.field{display:flex;flex-direction:column;gap:4px}
+.lbl{font-size:10.5px;color:var(--text2);font-weight:700;letter-spacing:0.04em;text-transform:uppercase;display:flex;align-items:center;gap:4px}
+.inp{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r2);color:var(--text);font-size:14px;padding:10px 11px;outline:none;transition:all 0.15s;width:100%;-webkit-appearance:none}
+.inp:focus{border-color:var(--green);background:#fff;box-shadow:0 0 0 3px var(--green-bg)}
+.inp::placeholder{color:var(--text3)}
+.inp-p{position:relative}.inp-p .inp{padding-left:22px}
+.inp-ps{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px;pointer-events:none;z-index:1}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.frow3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+
+/* ── TOGGLE ── */
+.tog{display:flex;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.tog-b{flex:1;padding:9px 12px;border:none;background:none;color:var(--text2);font-size:13px;font-weight:600;transition:all 0.15s}
+.tog-b.on{background:var(--text);color:#fff}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:var(--r2);border:none;font-size:13px;font-weight:600;transition:all 0.15s}
+.btn-dark{background:var(--text);color:#fff}.btn-dark:hover{background:#2d2b26}
+.btn-green{background:var(--green);color:#fff}.btn-green:hover{opacity:.9}
+.btn-ghost{background:none;border:1.5px solid var(--border);color:var(--text2)}.btn-ghost:hover{border-color:var(--border2);color:var(--text)}
+.btn-sm{padding:6px 13px;font-size:12px}
+.btn-del{background:none;border:none;color:var(--text3);font-size:14px;padding:4px 7px;border-radius:5px;transition:color 0.15s;min-width:30px;min-height:30px;display:flex;align-items:center;justify-content:center}.btn-del:hover{color:var(--red)}
+.btn-add{display:flex;align-items:center;justify-content:center;gap:6px;background:none;border:1.5px dashed var(--border2);border-radius:var(--r2);padding:10px;color:var(--text3);font-size:13px;font-weight:600;width:100%;transition:all 0.15s}.btn-add:hover{color:var(--green);border-color:var(--green);background:var(--green-bg)}
+
+/* ── TOOLTIP ── */
+.tip{position:relative;display:inline-flex;align-items:center;cursor:help}
+.tip-i{width:14px;height:14px;border-radius:50%;background:var(--surface3);color:var(--text3);font-size:8px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.tip-box{position:absolute;bottom:calc(100%+6px);left:50%;transform:translateX(-50%);background:#1a1814;color:#fff;font-size:11px;line-height:1.55;padding:8px 12px;border-radius:9px;width:220px;z-index:9999;pointer-events:none;opacity:0;transition:opacity 0.15s;font-weight:400;white-space:normal}
+.tip:hover .tip-box{opacity:1}
+.tip-box::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#1a1814}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:0.03em}
+.bg{background:var(--green-bg);color:var(--green)}.br{background:var(--red-bg);color:var(--red)}
+.ba{background:var(--amber-bg);color:var(--amber)}.bb{background:var(--blue-bg);color:var(--blue)}
+.bp{background:var(--purple-bg);color:var(--purple)}
+
+/* ── INSIGHT BOXES ── */
+.ins{border-radius:var(--r2);padding:13px 15px;display:flex;flex-direction:column;gap:4px}
+.ins.g{background:var(--green-bg);border:1px solid var(--green-lt)}
+.ins.a{background:var(--amber-bg);border:1px solid var(--amber-lt)}
+.ins.b{background:var(--blue-bg);border:1px solid var(--blue-lt)}
+.ins.r{background:var(--red-bg);border:1px solid var(--red-lt)}
+.ins.p{background:var(--purple-bg);border:1px solid var(--purple-lt)}
+.ins-l{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em}
+.ins.g .ins-l{color:var(--green)}.ins.a .ins-l{color:var(--amber)}.ins.b .ins-l{color:var(--blue)}.ins.r .ins-l{color:var(--red)}.ins.p .ins-l{color:var(--purple)}
+.ins p{font-size:12px;color:var(--text2);line-height:1.6}
+
+/* ── DISCLAIMER ── */
+.disclaimer{background:var(--amber-bg);border:1.5px solid var(--amber-lt);border-radius:var(--r2);padding:13px 15px}
+.disclaimer-t{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--amber);margin-bottom:4px}
+.disclaimer p{font-size:11.5px;color:var(--text2);line-height:1.6}
+
+/* ── COACH BANNER ── */
+.coach{background:linear-gradient(135deg,#0d1f12 0%,#0a2617 50%,#112010 100%);border-radius:var(--r);padding:20px 22px;color:#fff;position:relative;overflow:hidden}
+.coach::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(26,107,66,0.15)}
+.coach-hi{font-size:10px;color:rgba(255,255,255,0.38);text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:4px}
+.coach-msg{font-family:var(--font-d);font-size:15px;line-height:1.5;margin-bottom:12px;color:rgba(255,255,255,0.93)}
+.coach-tips{display:flex;flex-direction:column;gap:4px}
+.coach-tip{font-size:12px;color:rgba(255,255,255,0.55);display:flex;gap:7px;line-height:1.5}
+.coach-tip::before{content:'→';color:#3dd68c;flex-shrink:0}
+
+/* ── FOOTNOTE ── */
+.fn{font-size:10px;color:var(--text3);margin-top:8px;line-height:1.55;font-style:italic;border-top:1px solid var(--border);padding-top:7px}
+
+/* ── DONUT CHART ── */
+.donut-wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.legend{display:flex;flex-direction:column;gap:7px;flex:1;min-width:110px}
+.leg-row{display:flex;align-items:center;gap:6px;font-size:11px}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ── BAR CHART ── */
+.bars{display:flex;flex-direction:column;gap:8px}
+.brow{display:grid;grid-template-columns:110px 1fr 72px;gap:8px;align-items:center}
+.blbl{font-size:11px;color:var(--text2);text-align:right;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btrack{background:var(--surface3);border-radius:99px;height:6px;overflow:hidden}
+.bfill{height:100%;border-radius:99px;transition:width 0.5s cubic-bezier(.4,0,.2,1)}
+.bval{font-size:11px;color:var(--text);font-weight:600;text-align:right}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;padding:0 9px 8px;text-align:left;border-bottom:1.5px solid var(--border);white-space:nowrap}
+.tbl th.r{text-align:right}
+.tbl td{padding:9px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text);vertical-align:middle}
+.tbl td.r{text-align:right;font-variant-numeric:tabular-nums}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(0,0,0,0.015)}
+.ti{background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font);font-size:12px;width:100%;min-width:0;text-align:inherit}
+.ti:focus{background:var(--green-bg);border-radius:4px;padding:1px 4px;outline:1px solid var(--green)}
+
+/* ── SUB-TABS ── */
+.stabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.stab{padding:6px 14px;border-radius:999px;border:1.5px solid var(--border);background:none;color:var(--text2);font-size:11.5px;font-weight:700;transition:all 0.15s;min-height:34px}
+.stab:hover{border-color:var(--border2);color:var(--text)}
+.stab.on{background:var(--text);color:#fff;border-color:var(--text)}
+
+/* ── DIVIDER ── */
+.div{height:1px;background:var(--border);margin:14px 0}
+
+/* ── TAX ROWS ── */
+.tax-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
+.tax-row:last-child{border-bottom:none}
+.tax-row.sub .tax-l{padding-left:16px;font-size:11.5px;color:var(--text3)}
+.tax-row.tot{border-top:2px solid var(--border);border-bottom:none;padding-top:12px;margin-top:4px}
+.tax-l{font-size:13px;color:var(--text2)}
+.tax-v{font-size:13px;font-weight:700;font-family:var(--font-d);color:var(--text)}
+.tax-v.r{color:var(--red)}.tax-v.g{color:var(--green)}.tax-v.a{color:var(--amber)}
+
+/* ── VISUAL TIMELINE ── */
+.vtl-item{display:flex;gap:14px;align-items:flex-start;margin-bottom:0;position:relative}
+.vtl-left{display:flex;flex-direction:column;align-items:center;gap:0;flex-shrink:0;width:54px}
+.vtl-yr{font-size:9px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;text-align:center;margin-bottom:4px}
+.vtl-icon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;border:3px solid var(--bg);box-shadow:var(--shadow-md);position:relative;z-index:2;flex-shrink:0}
+.vtl-line{width:2px;flex:1;min-height:20px;background:var(--border);margin:0 auto}
+.vtl-body{flex:1;padding-bottom:20px}
+.vtl-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px;box-shadow:var(--shadow)}
+.vtl-card.hl{border-color:var(--green);box-shadow:0 0 0 3px var(--green-bg),var(--shadow)}
+.vtl-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.vtl-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.vtl-chip{font-size:10px;padding:2px 8px;border-radius:999px;font-weight:700;display:inline-flex;align-items:center;gap:3px}
+.vtl-impact{font-size:11px;color:var(--text2);margin-top:6px;padding-top:7px;border-top:1px solid var(--border);display:flex;gap:14px;flex-wrap:wrap}
+.vtl-impact-item{}
+.vtl-impact-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;font-weight:700;margin-bottom:2px}
+.vtl-impact-val{font-size:13px;font-weight:700}
+
+/* ── CHATBOT ── */
+.chat-fab{position:fixed;bottom:calc(70px + var(--safe-bot));right:16px;width:52px;height:52px;border-radius:50%;background:var(--green);border:none;color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-lg);z-index:500;transition:all 0.2s}
+.chat-panel{position:fixed;bottom:calc(134px + var(--safe-bot));right:16px;width:calc(100vw - 32px);max-width:360px;background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg);z-index:500;display:flex;flex-direction:column;max-height:420px;overflow:hidden}
+.chat-head{padding:12px 14px;background:var(--text);border-radius:16px 16px 0 0;display:flex;align-items:center;justify-content:space-between}
+.chat-ht{font-size:13px;font-weight:700;color:#fff;display:flex;align-items:center;gap:7px}
+.chat-hc{background:none;border:none;color:rgba(255,255,255,0.4);font-size:18px;padding:2px 6px;min-width:30px;min-height:30px}.chat-hc:hover{color:#fff}
+.chat-msgs{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px;display:flex;flex-direction:column;gap:9px;min-height:160px}
+.msg{max-width:88%;border-radius:12px;padding:9px 12px;font-size:12.5px;line-height:1.6}
+.msg.user{background:var(--green);color:#fff;align-self:flex-end;border-bottom-right-radius:2px}
+.msg.ai{background:var(--surface2);color:var(--text);align-self:flex-start;border-bottom-left-radius:2px;border:1px solid var(--border)}
+.msg.loading{color:var(--text3);font-style:italic}
+.chat-inp-row{display:flex;gap:7px;padding:10px 12px;border-top:1px solid var(--border)}
+.chat-inp{flex:1;background:var(--surface2);border:1.5px solid var(--border);border-radius:999px;padding:9px 14px;font-size:13px;color:var(--text);outline:none;transition:border-color 0.15s}
+.chat-inp:focus{border-color:var(--green);background:#fff}
+.chat-send{background:var(--green);color:#fff;border:none;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;transition:opacity 0.15s}
+
+/* ── LOGIN ── */
+.login-bg{min-height:100dvh;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:20px}
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:36px 28px;width:100%;max-width:380px;box-shadow:var(--shadow-lg)}
+.login-brand{font-family:var(--font-d);font-size:26px;text-align:center;margin-bottom:3px}
+.login-sub{font-size:12px;color:var(--text3);text-align:center;margin-bottom:26px;line-height:1.5}
+.login-err{background:var(--red-bg);border:1px solid var(--red-lt);color:var(--red);border-radius:7px;padding:9px 13px;font-size:12.5px;text-align:center}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp 0.25s ease both}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin 1s linear infinite}
+
+/* ══════════════════════════════════════
+   MOBILE RESPONSIVE (≤ 640px)
+══════════════════════════════════════ */
+@media(max-width:640px){
+  /* Switch layout */
+  .mob-header{display:flex}
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main-area{margin-left:0}
+  .topbar{display:none}
+  .bottom-nav{display:block}
+  .chat-fab{bottom:calc(76px + var(--safe-bot))}
+  .chat-panel{bottom:calc(140px + var(--safe-bot));left:8px;right:8px;width:auto;max-width:none}
+
+  /* Page padding */
+  .page{padding:14px 14px 90px}
+
+  /* Grid collapsing */
+  .g4{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:1fr 1fr}
+  .g2{grid-template-columns:1fr}
+  .frow{grid-template-columns:1fr}
+  .frow3{grid-template-columns:1fr 1fr}
+
+  /* Cards */
+  .card{padding:14px}
+  .stat{padding:13px 14px}
+  .stat-v{font-size:18px}
+
+  /* Bar chart labels */
+  .brow{grid-template-columns:80px 1fr 60px}
+  .blbl{font-size:10px}
+
+  /* Search hidden on mobile (use bottom nav) */
+  .sw{display:none}
+  .infl-btn{font-size:10px;padding:4px 9px}
+  .infl-rate-input{width:50px}
+
+  /* Tables scroll */
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -14px;padding:0 14px}
+
+  /* Donut responsive */
+  .donut-wrap{flex-direction:column;align-items:flex-start}
+
+  /* Login */
+  .login-card{padding:28px 20px}
+}
+
+/* ── TABLET (641-900px) ── */
+@media(min-width:641px) and (max-width:900px){
+  .sidebar{width:200px}
+  .main-area{margin-left:200px}
+  .g4{grid-template-columns:1fr 1fr}
+  .page{padding:18px 18px 80px}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="module">
+// ─── IMPORTS ────────────────────────────────────────────────────────────────
+import { h, render, useState, useEffect, useMemo, useCallback, useRef } from
+  'https://esm.sh/preact@10/compat';
+
+// ─── HELPERS ────────────────────────────────────────────────────────────────
+const fmt=(n,d=0)=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:d}).format(n||0);
+const pct=(n,d=1)=>`${((n||0)*100).toFixed(d)}%`;
+const num=v=>parseFloat(v)||0;
+const realVal=(nom,r,n)=>nom/Math.pow(1+r,n);
+const fvL=(pv,r,n)=>pv*Math.pow(1+r,n);
+const fvA=(pmt,r,n)=>r===0?pmt*n:pmt*((Math.pow(1+r,n)-1)/r);
+
+// ─── 2026 TAX DATA ───────────────────────────────────────────────────────────
+const STD={single:15000,married:30000,hoh:22500};
+const BR={
+  single:[[11925,.10],[48475,.12],[103350,.22],[197300,.24],[250525,.32],[626350,.35],[Infinity,.37]],
+  married:[[23850,.10],[96950,.12],[206700,.22],[394600,.24],[501050,.32],[751600,.35],[Infinity,.37]],
+  hoh:[[17000,.10],[64850,.12],[103350,.22],[197300,.24],[250500,.32],[626350,.35],[Infinity,.37]],
+};
+const LTCG_BR={
+  single:[[48350,0],[533400,.15],[Infinity,.20]],
+  married:[[96700,0],[600050,.15],[Infinity,.20]],
+  hoh:[[64750,0],[566700,.15],[Infinity,.20]],
+};
+const SS_BASE=176100;
+const LIM={k401:23500,ira:7000,hsa_s:4300};
+
+function fedTax(taxable,status){
+  const br=BR[status]||BR.single;
+  let tax=0,prev=0;
+  for(const[lim,rate]of br){
+    if(taxable<=prev)break;
+    tax+=(Math.min(taxable,lim)-prev)*rate;
+    prev=lim;
+    if(taxable<=lim)break;
+  }
+  return tax;
+}
+function calcFICA(wages,status){
+  const ss=Math.min(wages,SS_BASE)*.062;
+  const med=wages*.0145;
+  const addl=Math.max(0,wages-(status==='married'?250000:200000))*.009;
+  return{ss,med,addl,total:ss+med+addl};
+}
+function ltcgTax(gain,ordIncome,status){
+  const thr=LTCG_BR[status]||LTCG_BR.single;
+  let tax=0,prev=0,rem=gain;
+  for(const[lim,rate]of thr){
+    const space=Math.max(0,lim-Math.max(ordIncome,prev));
+    const chunk=Math.min(rem,space);
+    tax+=chunk*rate;
+    rem-=chunk;prev=lim;
+    if(rem<=0)break;
+  }
+  return tax;
+}
+function marginalRate(taxable,status){
+  const br=BR[status]||BR.single;
+  let prev=0;
+  for(const[lim,rate]of br){if(taxable<=lim)return rate;prev=lim;}
+  return .37;
+}
+function niit(inv,agi,status){
+  return Math.max(0,Math.min(inv,agi-(status==='married'?250000:200000)))*.038;
+}
+
+// ─── EXPENSE CATEGORIES (MECE) ───────────────────────────────────────────────
+const ECATS=[
+  {id:'housing',label:'Housing',hint:'Rent/mortgage, HOA, property tax, maintenance, renter\'s insurance'},
+  {id:'utilities',label:'Utilities',hint:'Electric, gas, water, internet, phone'},
+  {id:'food',label:'Food & Dining',hint:'Groceries, restaurants, coffee, delivery'},
+  {id:'transport',label:'Transportation',hint:'Car payment, gas, insurance, parking, transit, rideshare'},
+  {id:'healthcare',label:'Healthcare',hint:'Insurance premiums (after-tax), copays, prescriptions, dental, vision'},
+  {id:'insurance',label:'Insurance (other)',hint:'Life, disability — not health insurance'},
+  {id:'childcare',label:'Child & Family',hint:'Daycare, tuition, child activities, pets'},
+  {id:'personal',label:'Personal Care',hint:'Haircuts, gym, clothing, toiletries'},
+  {id:'entertainment',label:'Entertainment',hint:'Streaming, hobbies, concerts, books, travel'},
+  {id:'subscriptions',label:'Subscriptions',hint:'Software, news, memberships'},
+  {id:'savings_goal',label:'Savings Goals',hint:'Non-retirement savings (home fund, vacation fund)'},
+  {id:'giving',label:'Giving',hint:'Charitable donations, gifts'},
+  {id:'other',label:'Other',hint:'Anything that doesn\'t fit above'},
+];
+
+// ─── BUDGET ENGINE ───────────────────────────────────────────────────────────
+function calcBudget(d){
+  const w2=d.incomes.filter(i=>i.type==='w2').reduce((s,i)=>s+num(i.amount),0)+num(d.bonus);
+  const se=d.incomes.filter(i=>i.type==='self').reduce((s,i)=>s+num(i.amount),0);
+  const passive=d.incomes.filter(i=>!['w2','self'].includes(i.type)).reduce((s,i)=>s+num(i.amount),0);
+  const gross=w2+se+passive;
+  const pre401k=num(d.retirement.trad401k)*12;
+  const tradIRA=num(d.retirement.tradIRA)*12;
+  const hsaDed=num(d.retirement.hsa)*12;
+  const seDed=se*.5;
+  const slIntDed=Math.min(num(d.deductions?.studentLoanInt||0),2500);
+  const agi=Math.max(0,gross-pre401k-tradIRA-hsaDed-seDed-slIntDed);
+  const stdDed=STD[d.filingStatus]||STD.single;
+  const itemDed=d.itemize?(num(d.deductions?.mortgage||0)+Math.min(num(d.deductions?.salt||0),10000)+num(d.deductions?.charitable||0)+Math.max(0,num(d.deductions?.medical||0)-agi*.075)+num(d.deductions?.other||0)):0;
+  const ded=d.itemize?Math.max(stdDed,itemDed):stdDed;
+  const credits=Object.values(d.credits||{}).reduce((s,v)=>s+num(v),0);
+  const taxable=Math.max(0,agi-ded);
+  const ft=fedTax(taxable,d.filingStatus);
+  const fica=calcFICA(w2+se*.9235,d.filingStatus);
+  const stateTax=agi*num(d.stateRate)/100;
+  const totalTax=Math.max(0,ft+fica.total+stateTax-credits);
+  const netAnnual=gross-totalTax;
+  const retMonthly=Object.values(d.retirement).reduce((s,v)=>s+num(v),0);
+  const expMonthly=d.expenses.reduce((s,e)=>s+num(e.amount),0);
+  const debtPmt=d.liabilities.reduce((s,l)=>s+num(l.payment),0);
+  const annualSavings=netAnnual-(expMonthly+retMonthly)*12-debtPmt*12;
+  const savingsRate=gross>0?Math.max(0,annualSavings)/gross:0;
+  const marg=marginalRate(taxable,d.filingStatus);
+  const eff=gross>0?totalTax/gross:0;
+  return{w2,se,passive,gross,pre401k,tradIRA,hsaDed,seDed,slIntDed,agi,stdDed,itemDed,ded,credits,taxable,fedTax:ft,fica,stateTax,totalTax,netAnnual,retMonthly,expMonthly,debtPmt,annualSavings,savingsRate,marginal:marg,effective:eff};
+}
+
+// ─── PROJECTION ENGINE ───────────────────────────────────────────────────────
+function buildProjection({budget,d,prices,inflRate,years=35}){
+  const getP=h=>prices[h.ticker?.toUpperCase()]?.price||num(h.price);
+  const allH=d.accounts.flatMap(a=>a.holdings);
+  const totPort=allH.reduce((s,h)=>s+num(h.shares)*getP(h),0);
+  const wRet=totPort>0?allH.reduce((s,h)=>{const mv=num(h.shares)*getP(h);return s+(mv/totPort)*num(h.expRet)},0):7;
+  const portRate=wRet/100;
+  const cash=num(d.checkingBal)+num(d.savingsBal)+num(d.emergencyFund);
+  const initLiab=d.liabilities.reduce((s,l)=>s+num(l.balance),0);
+  const baseMonthlySav=budget.annualSavings/12;
+  const curYear=new Date().getFullYear();
+  const rows=[];
+  let portVal=totPort,liabVal=initLiab;
+  for(let i=0;i<=years;i++){
+    const yr=curYear+i;
+    const newMs=d.timeline.filter(m=>Number(m.year)===yr);
+    const lumpCost=newMs.reduce((s,m)=>s+num(m.cost),0);
+    const cumDelta=d.timeline.filter(m=>Number(m.year)<=yr).reduce((s,m)=>s+num(m.monthlyDelta),0);
+    const effMonthlySav=baseMonthlySav+cumDelta;
+    if(i>0){
+      portVal=portVal*(1+portRate)+Math.max(0,effMonthlySav*12);
+      const mr=d.liabilities.length>0?d.liabilities.reduce((s,l)=>s+num(l.rate)/100/12,0)/Math.max(d.liabilities.length,1):0;
+      const totPmts=d.liabilities.reduce((s,l)=>s+num(l.payment),0)*12;
+      liabVal=Math.max(0,liabVal*Math.pow(1+mr,12)-totPmts);
+      portVal=Math.max(0,portVal-lumpCost);
+    }
+    const nomNW=portVal+cash-liabVal;
+    rows.push({year:yr,age:d.age+i,nomNW,realNW:realVal(nomNW,inflRate,i),portVal,liabVal,lumpCost,effMonthlySav,newMs});
+  }
+  return rows;
+}
+
+// ─── STORAGE ─────────────────────────────────────────────────────────────────
+const SK='sf_v4';
+const loadP=()=>{try{return JSON.parse(localStorage.getItem(SK)||'{}')}catch{return{}}};
+const saveP=p=>localStorage.setItem(SK,JSON.stringify(p));
+
+// ─── CONSTANTS ───────────────────────────────────────────────────────────────
+const ATYPES=['Taxable Brokerage','Traditional 401(k)','Roth 401(k)','Roth IRA','Traditional IRA','HSA','529 Plan'];
+const TAX_ADV=['Traditional 401(k)','Roth 401(k)','Roth IRA','Traditional IRA','HSA'];
+const ROTH=['Roth 401(k)','Roth IRA'];
+const ACOLS=['#1a6b42','#1a4f8a','#5a3d8a','#9a6b1a','#1a6b62','#c0392b','#1a6b7a'];
+const MI_CATS=['housing','family','life','career','savings','health','travel','retirement','education','medical','other'];
+const MI_ICO={housing:'🏡',family:'👶',life:'💍',career:'💼',savings:'🏦',health:'💊',travel:'✈️',retirement:'🌴',education:'🎓',medical:'🏥',other:'📌'};
+const MI_COL={housing:'#1a4f8a',family:'#9a6b1a',life:'#5a3d8a',career:'#6b6457',savings:'#1a6b42',health:'#c0392b',travel:'#1a6b62',retirement:'#1a6b42',education:'#1a6b62',medical:'#c0392b',other:'#a09880'};
+
+// ─── DEFAULT DATA ─────────────────────────────────────────────────────────────
+function mkDefault(name='Friend'){
+  return{
+    name,age:30,retireAge:65,
+    filingStatus:'single',stateRate:5.5,stateName:'New York',
+    itemize:false,inflationRate:3.0,
+    incomes:[{id:1,label:'Base Salary',amount:120000,type:'w2'}],
+    bonus:10000,
+    expenses:[
+      {id:1,label:'Rent',cat:'housing',amount:2200},
+      {id:2,label:'Electric & Gas',cat:'utilities',amount:150},
+      {id:3,label:'Internet & Phone',cat:'utilities',amount:130},
+      {id:4,label:'Groceries',cat:'food',amount:500},
+      {id:5,label:'Restaurants',cat:'food',amount:300},
+      {id:6,label:'Car Payment & Insurance',cat:'transport',amount:550},
+      {id:7,label:'Gas & Parking',cat:'transport',amount:120},
+      {id:8,label:'Health Insurance',cat:'healthcare',amount:180},
+      {id:9,label:'Gym & Personal Care',cat:'personal',amount:80},
+      {id:10,label:'Entertainment & Hobbies',cat:'entertainment',amount:200},
+      {id:11,label:'Streaming & Subscriptions',cat:'subscriptions',amount:60},
+      {id:12,label:'Clothing & Misc',cat:'other',amount:100},
+    ],
+    retirement:{trad401k:700,roth401k:0,rothIRA:500,tradIRA:0,hsa:0},
+    deductions:{mortgage:0,salt:0,charitable:500,medical:0,studentLoanInt:0,other:0},
+    credits:{childTax:0,childCare:0,education:0,ev:0,other:0},
+    checkingBal:8000,savingsBal:15000,emergencyFund:5000,
+    liabilities:[
+      {id:1,label:'Student Loan',balance:25000,rate:5.5,payment:280},
+      {id:2,label:'Car Loan',balance:12000,rate:4.9,payment:350},
+    ],
+    accounts:[
+      {id:'a1',name:'Vanguard Brokerage',type:'Taxable Brokerage',holdings:[
+        {id:'h1',ticker:'VTI',name:'Vanguard Total Market ETF',shares:'50',price:'268',cost:'210',div:'1.40',expRet:'9',vol:'14',gainType:'long'},
+        {id:'h2',ticker:'AAPL',name:'Apple Inc.',shares:'20',price:'198',cost:'150',div:'0.99',expRet:'10',vol:'22',gainType:'long'},
+      ]},
+      {id:'a2',name:'Fidelity 401(k)',type:'Traditional 401(k)',holdings:[
+        {id:'h3',ticker:'FXAIX',name:'Fidelity 500 Index',shares:'30',price:'178',cost:'130',div:'1.80',expRet:'9.5',vol:'15',gainType:'long'},
+      ]},
+      {id:'a3',name:'Schwab Roth IRA',type:'Roth IRA',holdings:[
+        {id:'h4',ticker:'BND',name:'Vanguard Bond ETF',shares:'30',price:'76',cost:'73',div:'3.20',expRet:'4.5',vol:'5',gainType:'long'},
+        {id:'h5',ticker:'VXUS',name:'International ETF',shares:'40',price:'63',cost:'55',div:'2.10',expRet:'7',vol:'16',gainType:'long'},
+      ]},
+    ],
+    riskProfile:1,
+    timeline:[
+      {id:1,year:2027,label:'Build 6-Month Emergency Fund',cost:0,monthlyDelta:-200,cat:'savings'},
+      {id:2,year:2028,label:'Buy a Home',cost:60000,monthlyDelta:600,cat:'housing'},
+      {id:3,year:2030,label:'Marriage & Wedding',cost:30000,monthlyDelta:150,cat:'life'},
+      {id:4,year:2033,label:'First Child',cost:5000,monthlyDelta:1400,cat:'family'},
+      {id:5,year:2043,label:'College Savings Begin',cost:0,monthlyDelta:400,cat:'education'},
+      {id:6,year:2055,label:'Retirement',cost:0,monthlyDelta:-3000,cat:'retirement'},
+    ],
+    finnhubKey:'d6i4kppr01ql9cieu8ugd6i4kppr01ql9cieu8v0',
+  };
+}
+
+// ─── SVG SPARKLINE ─────────────────────────────────────────────────────────
+function Spark({data,color='#1a6b42',data2=null,color2='#5a3d8a',h=70}){
+  if(!data||data.length<2)return null;
+  const all=[...data,...(data2||[])];
+  const maxV=Math.max(...all),minV=Math.min(...all,0);
+  const range=maxV-minV||1;
+  const W=400,H=h,p=4;
+  const tx=i=>p+(i/(data.length-1))*(W-p*2);
+  const ty=v=>H-p-((v-minV)/range)*(H-p*2);
+  const mkPath=arr=>arr.map((v,i)=>`${i===0?'M':'L'}${tx(i).toFixed(1)},${ty(v).toFixed(1)}`).join(' ');
+  const mkArea=arr=>{const d=mkPath(arr);return`${d} L${tx(arr.length-1)},${H} L${tx(0)},${H} Z`};
+  return h`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${h}px" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="sg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="0.15"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient>
+      ${data2?h`<linearGradient id="sg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color2}" stop-opacity="0.10"/><stop offset="100%" stop-color="${color2}" stop-opacity="0"/></linearGradient>`:null}
+    </defs>
+    <path d="${mkArea(data)}" fill="url(#sg1)"/>
+    <path d="${mkPath(data)}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${data2?h`<><path d="${mkArea(data2)}" fill="url(#sg2)"/><path d="${mkPath(data2)}" fill="none" stroke="${color2}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 3"/></>`:null}
+  </svg>`;
+}
+
+// ─── DONUT CHART ──────────────────────────────────────────────────────────────
+function Donut({slices,size=130,stroke=24,ctr,sub}){
+  const r=(size-stroke)/2,circ=2*Math.PI*r;
+  const valid=slices.filter(s=>s.value>0);
+  const total=valid.reduce((s,x)=>s+x.value,0);
+  let cum=0;
+  return h`<div class="donut-wrap">
+    <svg width="${size}" height="${size}" style="flex-shrink:0">
+      <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--surface3)" stroke-width="${stroke}"/>
+      ${valid.map((s,i)=>{const f=s.value/total,dash=f*circ,off=-cum*circ+circ*.25;cum+=f;return h`<circle key="${i}" cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${s.color}" stroke-width="${stroke}" stroke-dasharray="${dash} ${circ-dash}" stroke-dashoffset="${off}" style="transform:rotate(-90deg);transform-origin:center"/>` })}
+      ${ctr?h`<><text x="${size/2}" y="${size/2-5}" text-anchor="middle" fill="var(--text)" font-family="DM Serif Display,Georgia,serif" font-size="11" font-weight="600">${ctr}</text><text x="${size/2}" y="${size/2+8}" text-anchor="middle" fill="var(--text3)" font-family="DM Sans,system-ui,sans-serif" font-size="8">${sub}</text></>`:null}
+    </svg>
+    <div class="legend">${valid.map((s,i)=>h`<div key="${i}" class="leg-row"><span class="leg-dot" style="background:${s.color}"/><span style="color:var(--text2);flex:1;font-size:11px">${s.label}</span><span style="font-weight:700;font-size:11px">${fmt(s.value)}</span><span style="color:var(--text3);margin-left:4px;font-size:10px">${total>0?pct(s.value/total):'—'}</span></div>`)}</div>
+  </div>`;
+}
+
+// ─── BARS ─────────────────────────────────────────────────────────────────────
+function Bars({rows}){
+  const max=Math.max(...rows.map(r=>r.value),1);
+  return h`<div class="bars">${rows.map((r,i)=>h`<div key="${i}" class="brow">
+    <span class="blbl">${r.label}</span>
+    <div class="btrack"><div class="bfill" style="width:${(r.value/max)*100}%;background:${r.color||'var(--green)'}"/></div>
+    <span class="bval">${fmt(r.value)}</span>
+  </div>`)}</div>`;
+}
+
+// ─── DISCLAIMER ──────────────────────────────────────────────────────────────
+function Disclaimer(){
+  return h`<div class="disclaimer">
+    <div class="disclaimer-t">⚠ Educational Tool — Not Professional Financial Advice</div>
+    <p>SimpliFinance is a <strong>visualization and insights tool</strong>. All projections and suggestions are based on general financial planning guidelines. They do <strong>not</strong> reflect the views of a CFP, CFA, CPA, or any licensed advisor. Tax calculations are estimates — consult a professional for your actual return. Past performance does not predict future results.</p>
+  </div>`;
+}
+
+// ─── TOOLTIP ──────────────────────────────────────────────────────────────────
+const TIPS={
+  sharpe:'Sharpe Ratio = (Return − Risk-Free Rate) ÷ Volatility. >1.0 good, >2.0 excellent.',
+  vol:'Standard deviation of annual returns. <10% conservative, 10-18% moderate, >18% aggressive.',
+  ltcg:'Long-term gains: held 12+ months. 2026 rates: 0%, 15%, or 20% based on total income.',
+  stcg:'Short-term gains: held <12 months. Taxed at your ordinary income marginal rate.',
+  roth:'Roth: after-tax contributions. All growth and qualified withdrawals are tax-free.',
+  trad:'Traditional: pre-tax contributions reduce income today. Withdrawals taxed as ordinary income.',
+  safe4:'4% Rule: withdraw 4% in year 1 of retirement, adjusted for inflation annually. Historically lasts 30+ years.',
+  infl:'Real (inflation-adjusted) value = Nominal ÷ (1+rate)^years. Shows purchasing power in today\'s dollars.',
+  mece:'MECE: Mutually Exclusive, Collectively Exhaustive. Every dollar belongs to exactly one category.',
+  agi:'AGI = Gross Income minus above-the-line deductions (401k, IRA, HSA, SE tax deduction, student loan interest).',
+};
+function Tip({k,children}){
+  return h`<span class="tip">${children}<span class="tip-i">?</span><span class="tip-box">${TIPS[k]||k}</span></span>`;
+}
+
+// ─── AUTH SCREEN ──────────────────────────────────────────────────────────────
+function AuthScreen({onLogin}){
+  const[mode,setMode]=useState('login');
+  const[name,setName]=useState('');
+  const[pin,setPin]=useState('');
+  const[confirm,setConfirm]=useState('');
+  const[err,setErr]=useState('');
+  const go=()=>{
+    setErr('');
+    const ps=loadP();
+    if(mode==='register'){
+      if(!name.trim())return setErr('Enter your name.');
+      if(pin.length<4)return setErr('PIN must be 4+ digits.');
+      if(pin!==confirm)return setErr('PINs don\'t match.');
+      const id=name.toLowerCase().replace(/\s+/g,'_')+'_'+Date.now();
+      ps[id]={id,name:name.trim(),pin,data:mkDefault(name.trim())};
+      saveP(ps);onLogin(ps[id]);
+    }else{
+      const m=Object.values(ps).find(p=>p.name.toLowerCase()===name.toLowerCase()&&p.pin===pin);
+      if(!m)return setErr('Name or PIN not found.');
+      onLogin(m);
+    }
+  };
+  return h`<div class="login-bg"><div class="login-card fu">
+    <div class="login-brand">SimpliFinance</div>
+    <div class="login-sub">${mode==='login'?'Sign in to your profile.':'Create your personal finance dashboard.'}</div>
+    <div class="stack" style="gap:11px">
+      <div class="field"><label class="lbl">Your Name</label><input class="inp" placeholder="e.g. Alex" value="${name}" onInput=${e=>setName(e.target.value)} onKeyDown=${e=>e.key==='Enter'&&go()}/></div>
+      <div class="field"><label class="lbl">PIN / Password</label><input class="inp" type="password" placeholder="••••" value="${pin}" onInput=${e=>setPin(e.target.value)} onKeyDown=${e=>e.key==='Enter'&&go()}/></div>
+      ${mode==='register'?h`<div class="field"><label class="lbl">Confirm PIN</label><input class="inp" type="password" placeholder="••••" value="${confirm}" onInput=${e=>setConfirm(e.target.value)} onKeyDown=${e=>e.key==='Enter'&&go()}/></div>`:null}
+      ${err?h`<div class="login-err">${err}</div>`:null}
+      <button class="btn btn-dark" style="width:100%;justify-content:center;padding:12px 0;font-size:15px" onClick=${go}>${mode==='login'?'Sign In →':'Create Profile'}</button>
+    </div>
+    <div style="text-align:center;font-size:12px;color:var(--text3);margin-top:12px">
+      ${mode==='login'
+        ?h`<span style="color:var(--green);cursor:pointer;font-weight:700" onClick=${()=>{setMode('register');setErr('')}}>New? Create a profile →</span>`
+        :h`<span style="color:var(--green);cursor:pointer;font-weight:700" onClick=${()=>{setMode('login');setErr('')}}>Already have one? Sign in →</span>`}
+    </div>
+    <div style="margin-top:14px;background:var(--green-bg);border-radius:8px;padding:10px 13px;font-size:11px;color:var(--green)">🔒 Your data stays on this device only. Never uploaded anywhere.</div>
+  </div></div>`;
+}
+
+// ─── OVERVIEW ─────────────────────────────────────────────────────────────────
+function Overview({d,budget,prices,inflOn,inflRate}){
+  const{gross,netAnnual,annualSavings,savingsRate,totalTax,marginal}=budget;
+  const getP=h=>prices[h.ticker?.toUpperCase()]?.price||num(h.price);
+  const allH=d.accounts.flatMap(a=>a.holdings);
+  const totPort=allH.reduce((s,hh)=>s+num(hh.shares)*getP(hh),0);
+  const totDivs=allH.reduce((s,hh)=>s+num(hh.shares)*num(hh.div),0);
+  const cash=num(d.checkingBal)+num(d.savingsBal)+num(d.emergencyFund);
+  const totLiab=d.liabilities.reduce((s,l)=>s+num(l.balance),0);
+  const nomNW=totPort+cash-totLiab;
+  const ir=inflRate/100;
+  const projRows=buildProjection({budget,d,prices,inflRate:ir,years:10});
+  const nomProj=projRows.map(r=>r.nomNW);
+  const realProj=projRows.map(r=>r.realNW);
+  const retYrs=Math.max(1,d.retireAge-d.age);
+  const retRows=buildProjection({budget,d,prices,inflRate:ir,years:retYrs});
+  const retNW=retRows[retRows.length-1]?.nomNW||0;
+  const tips=[];
+  if(savingsRate<.15)tips.push(`Savings rate is ${pct(savingsRate)} — below the 15–20% target. Boosting by 5% adds ${fmt(gross*.05)}/yr.`);
+  else tips.push(`Savings rate of ${pct(savingsRate)} is solid. Keep compounding.`);
+  if(totDivs>0)tips.push(`Portfolio generates ${fmt(totDivs/12)}/mo in dividends — ${fmt(totDivs)}/yr in passive income.`);
+  if(marginal>=.22)tips.push(`At ${pct(marginal)} marginal rate, maxing your 401(k) could save ~${fmt((LIM.k401-budget.pre401k)*marginal)} in federal taxes this year.`);
+  return h`<div class="stack fu">
+    ${h`<${Disclaimer}/>`}
+    <div class="coach">
+      <div class="coach-hi">👋 Hey ${d.name},</div>
+      <div class="coach-msg">At your current savings rate, you could reach ${fmt(retNW)} by age ${d.retireAge}${inflOn?` (${fmt(realVal(retNW,ir,retYrs))} in today's dollars)`:''} — generating ${fmt(retNW*.04/12)}/month using the 4% rule.</div>
+      <div class="coach-tips">${tips.map((t,i)=>h`<div key="${i}" class="coach-tip">${t}</div>`)}</div>
+    </div>
+    <div class="g4">
+      ${[['Net Worth',nomNW,inflOn?realVal(nomNW,ir,0):null,'Assets − Liabilities','#1a6b42'],
+         ['Annual Savings',annualSavings,null,pct(savingsRate)+' of gross income','#1a4f8a'],
+         ['Portfolio Value',totPort,null,allH.length+' holdings · '+d.accounts.length+' accounts','#9a6b1a'],
+         ['Est. Tax Bill',totalTax,null,pct(budget.effective)+' effective · '+pct(marginal)+' marginal','#c0392b']
+      ].map(([lbl,nom,rl,meta,c])=>h`<div class="stat">
+        <div class="stat-bar" style="background:${c}"/>
+        <div class="stat-l">${lbl}</div>
+        <div class="stat-v">${fmt(nom)}</div>
+        ${inflOn&&rl!==null?h`<div class="stat-v infl">${fmt(rl)} <span class="infl-badge">real</span></div>`:null}
+        <div class="stat-m">${meta}</div>
+      </div>`)}
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-t">Income Allocation</div><div class="card-s">Annual — where it goes</div>
+        ${h`<${Donut} slices=${[
+          {label:'Taxes',value:Math.max(0,totalTax),color:'#c0392b'},
+          {label:'Expenses',value:budget.expMonthly*12,color:'#1a4f8a'},
+          {label:'Retirement',value:budget.retMonthly*12,color:'#1a6b62'},
+          {label:'Free Savings',value:Math.max(0,annualSavings),color:'#1a6b42'},
+        ].filter(s=>s.value>0)} ctr=${fmt(gross)} sub="gross"/>`}
+        <div class="fn">Savings = Gross − Taxes − Expenses − Retirement Contributions</div>
+      </div>
+      <div class="card">
+        <div class="card-t">10-Year Net Worth${inflOn?' (with Inflation)':''}</div>
+        <div class="card-s">${inflOn?'Nominal (solid) vs. Real adjusted (dashed)':'Nominal projection'}</div>
+        ${h`<${Spark} data=${nomProj} data2=${inflOn?realProj:null} h=${90}/>`}
+        <div style="display:flex;justify-content:space-between;margin-top:6px">
+          <span style="font-size:10.5px;color:var(--text3)">Today: ${fmt(nomNW)}</span>
+          <span style="font-size:10.5px;color:var(--green);font-weight:700">Yr 10: ${fmt(nomProj[10])}</span>
+        </div>
+        ${inflOn?h`<div style="text-align:right;font-size:10px;color:var(--purple);font-weight:600;margin-top:2px">Real Yr 10: ${fmt(realProj[10])}</div>`:null}
+        <div class="fn">Real = Nominal ÷ (1+${ir})^n. Portfolio compounds at weighted average expected return of your holdings.</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-t">Monthly Cash Flow</div><div class="card-s">Take-home vs outflows</div>
+        ${h`<${Bars} rows=${[
+          {label:'Take-Home',value:netAnnual/12,color:'#6b6457'},
+          {label:'Housing',value:d.expenses.filter(e=>e.cat==='housing').reduce((s,e)=>s+num(e.amount),0),color:'#1a4f8a'},
+          {label:'Other Exp.',value:d.expenses.filter(e=>e.cat!=='housing').reduce((s,e)=>s+num(e.amount),0),color:'#9a6b1a'},
+          {label:'Retirement',value:budget.retMonthly,color:'#1a6b62'},
+          {label:'Debt Pmts',value:budget.debtPmt,color:'#c0392b'},
+          {label:'Savings',value:Math.max(0,annualSavings/12),color:'#1a6b42'},
+        ].filter(r=>r.value>0)}/>`}
+        <div class="fn">Monthly Savings = Take-Home − All Expenses − Retirement − Debt Payments</div>
+      </div>
+      <div class="card">
+        <div class="card-t">Retirement Snapshot</div><div class="card-s">Age ${d.retireAge} projection</div>
+        ${[
+          ['Projected Balance',fmt(retNW),'var(--purple)'],
+          inflOn?['Real Balance (today\'s $)',fmt(realVal(retNW,ir,retYrs)),'var(--purple)']:null,
+          ['4% Withdrawal / yr',fmt(retNW*.04),'var(--green)'],
+          ['4% Withdrawal / mo',fmt(retNW*.04/12),'var(--green)'],
+          ['Years to Retire',Math.max(0,d.retireAge-d.age)+' yrs','var(--blue)'],
+        ].filter(Boolean).map(([l,v,c])=>h`<div style="display:flex;justify-content:space-between;padding-bottom:9px;border-bottom:1px solid var(--border)">
+          <span style="font-size:12px;color:var(--text2)">${l}</span>
+          <span style="font-family:var(--font-d);font-size:14px;color:${c};font-weight:700">${v}</span>
+        </div>`)}
+        <div class="fn">FV = PV×(1+r)^n + PMT×((1+r)^n−1)/r. r = portfolio weighted avg expected return.</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─── BUDGET ───────────────────────────────────────────────────────────────────
+function BudgetTab({d,upd,budget}){
+  const idR=useRef(100);
+  const nid=()=>++idR.current;
+  const{gross,netAnnual,annualSavings,fedTax,fica,stateTax,totalTax,marginal,effective}=budget;
+  const totalExp=d.expenses.reduce((s,e)=>s+num(e.amount),0);
+  return h`<div class="stack fu">
+    <div class="card">
+      <div class="card-h">
+        <div><div class="card-t">Income Sources</div><div class="card-s">Annual before tax</div></div>
+        <button class="btn btn-ghost btn-sm" onClick=${()=>upd({incomes:[...d.incomes,{id:nid(),label:'New Income',amount:0,type:'w2'}]})}>+ Add</button>
+      </div>
+      <div class="stack" style="gap:10px">
+        ${d.incomes.map(inc=>h`<div key="${inc.id}" style="display:grid;grid-template-columns:1fr 110px 105px 36px;gap:8px;align-items:end">
+          <div class="field"><label class="lbl">Source</label><input class="inp" value="${inc.label}" onInput=${e=>upd({incomes:d.incomes.map(i=>i.id===inc.id?{...i,label:e.target.value}:i)})}/></div>
+          <div class="field"><label class="lbl">$/year</label><div class="inp-p"><span class="inp-ps">$</span><input class="inp" type="number" value="${inc.amount}" onInput=${e=>upd({incomes:d.incomes.map(i=>i.id===inc.id?{...i,amount:e.target.value}:i)})}/></div></div>
+          <div class="field"><label class="lbl">Type</label><select class="inp" value="${inc.type}" onChange=${e=>upd({incomes:d.incomes.map(i=>i.id===inc.id?{...i,type:e.target.value}:i)})}>
+            <option value="w2">W-2 / Salary</option><option value="self">Self-Employed</option><option value="bonus">Bonus</option>
+            <option value="rental">Rental</option><option value="dividends">Dividends</option><option value="other">Other</option>
+          </select></div>
+          <button class="btn-del" onClick=${()=>upd({incomes:d.incomes.filter(i=>i.id!==inc.id)})}>✕</button>
+        </div>`)}
+        <div class="field" style="max-width:240px"><label class="lbl">Annual Bonus</label><div class="inp-p"><span class="inp-ps">$</span><input class="inp" type="number" value="${d.bonus}" onInput=${e=>upd({bonus:e.target.value})}/></div></div>
+      </div>
+      <div class="fn">W-2 wages: subject to FICA (SS 6.2% up to $176,100 + Medicare 1.45%). Self-employed: 50% of SE tax is deductible above-the-line.</div>
+    </div>
+    <div class="card">
+      <div class="card-t">Retirement Contributions</div><div class="card-s">Monthly — 2026 IRS limits</div>
+      <div class="frow3">
+        ${[['trad401k','Traditional 401(k)',LIM.k401,'trad'],['roth401k','Roth 401(k)',LIM.k401,'roth'],['rothIRA','Roth IRA',LIM.ira,'roth'],['tradIRA','Traditional IRA',LIM.ira,'trad'],['hsa','HSA',LIM.hsa_s,'vol']].map(([k,lbl,lim,tip])=>{
+          const ann=num(d.retirement[k])*12;const over=ann>lim;
+          return h`<div class="field" key="${k}">
+            <label class="lbl">${h`<${Tip} k="${tip}">${lbl}<span style="font-weight:400;text-transform:none;font-size:9.5px;color:${over?'var(--red)':'var(--text3)'}"> max ${fmt(lim)}/yr</span><//>`}</label>
+            <div class="inp-p"><span class="inp-ps">$</span><input class="inp" type="number" value="${d.retirement[k]}" onInput=${e=>upd({retirement:{...d.retirement,[k]:e.target.value}})} style="${over?'border-color:var(--red)':''}"/></div>
+            ${over?h`<span style="font-size:10px;color:var(--red)">⚠ Over limit</span>`:null}
+          </div>`;
+        })}
+      </div>
+      <div class="fn">Traditional 401k/IRA: pre-tax, reduces AGI now, taxed at withdrawal. Roth: after-tax, no deduction now, but all growth is tax-free. HSA: triple tax advantage — deductible, grows tax-free, withdraw tax-free for medical.</div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-t">Tax Settings</div><div class="card-s">2026 filing</div>
+        <div class="stack" style="gap:10px">
+          <div class="frow">
+            <div class="field"><label class="lbl">Filing Status</label><select class="inp" value="${d.filingStatus}" onChange=${e=>upd({filingStatus:e.target.value})}>
+              <option value="single">Single</option><option value="married">Married Filing Jointly</option><option value="hoh">Head of Household</option>
+            </select></div>
+            <div class="field"><label class="lbl">State Tax Rate %</label><input class="inp" type="number" value="${d.stateRate}" onInput=${e=>upd({stateRate:e.target.value})} placeholder="0"/></div>
+          </div>
+          <div class="field"><label class="lbl">Deductions</label>
+            <div class="tog"><button class="${`tog-b${!d.itemize?' on':''}`}" onClick=${()=>upd({itemize:false})}>Standard (${fmt(STD[d.filingStatus]||15000)})</button><button class="${`tog-b${d.itemize?' on':''}`}" onClick=${()=>upd({itemize:true})}>Itemize</button></div>
+          </div>
+          ${d.itemize?h`<div class="stack" style="gap:8px">
+            ${[['mortgage','Mortgage Interest'],['salt','State & Local (SALT cap $10k)'],['charitable','Charitable'],['medical','Medical (over 7.5% of AGI)'],['studentLoanInt','Student Loan Interest (max $2,500)'],['other','Other Itemized']].map(([k,l])=>h`<div class="field" key="${k}"><label class="lbl">${l}</label><div class="inp-p"><span class="inp-ps">$</span><input class="inp" type="number" value="${d.deductions?.[k]||0}" onInput=${e=>upd({deductions:{...d.deductions,[k]:e.target.value}})}/></div></div>`)}
+          </div>`:null}
+          <div class="div"/>
+          ${[['Gross Income',fmt(gross),'var(--text)'],['Federal Tax',fmt(fedTax),'var(--red)'],['FICA',fmt(fica.total),'var(--amber)'],['State Tax',fmt(budget.stateTax),'var(--amber)'],['Total Tax',fmt(totalTax),'var(--red)'],['Monthly Take-Home',fmt(netAnnual/12),'var(--green)'],['Marginal Rate',pct(marginal),'var(--blue)'],['Effective Rate',pct(effective),'var(--text2)']].map(([l,v,c])=>h`<div style="display:flex;justify-content:space-between"><span style="font-size:12px;color:var(--text2)">${l}</span><span style="font-family:var(--font-d);font-size:13px;color:${c};font-weight:700">${v}</span></div>`)}
+          <div class="fn">State tax estimated as AGI × ${d.stateRate}%. Effective rate = Total Tax ÷ Gross Income.</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-t">Cash & Debts</div>
+        <div class="stack" style="gap:9px">
+          ${[['checkingBal','🏦 Checking'],['savingsBal','💰 Savings / HYSA'],['emergencyFund','🛡 Emergency Fund']].map(([k,l])=>h`<div class="field" key="${k}"><label class="lbl">${l}</label><div class="inp-p"><span class="inp-ps">$</span><input class="inp" type="number" value="${d[k]}" onInput=${e=>upd({[k]:e.target.value})}/></div></div>`)}
+          <div class="div"/>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <span style="font-size:12px;font-weight:700;color:var(--text2)">DEBTS</span>
+            <button class="btn btn-ghost btn-sm" onClick=${()=>upd({liabilities:[...d.liabilities,{id:nid(),label:'New Loan',balance:0,rate:0,payment:0}]})}>+ Add</button>
+          </div>
+          ${d.liabilities.map(l=>h`<div key="${l.id}" style="display:grid;grid-template-columns:1fr 60px 50px 58px 30px;gap:6px;align-items:end;margin-bottom:8px">
+            <div class="field"><label class="lbl">Name</label><input class="inp" value="${l.label}" onInput=${e=>upd({liabilities:d.liabilities.map(x=>x.id===l.id?{...x,label:e.target.value}:x)})}/></div>
+            <div class="field"><label class="lbl">Balance</label><input class="inp" type="number" value="${l.balance}" onInput=${e=>upd({liabilities:d.liabilities.map(x=>x.id===l.id?{...x,balance:e.target.value}:x)})}/></div>
+            <div class="field"><label class="lbl">Rate%</label><input class="inp" type="number" value="${l.rate}" onInput=${e=>upd({liabilities:d.liabilities.map(x=>x.id===l.id?{...x,rate:e.target.value}:x)})}/></div>
+            <div class="field"><label class="lbl">Pmt/mo</label><input class="inp" type="number" value="${l.payment}" onInput=${e=>upd({liabilities:d.liabilities.map(x=>x.id===l.id?{...x,payment:e.target.value}:x)})}/></div>
+            <button class="btn-del" onClick=${()=>upd({liabilities:d.liabilities.filter(x=>x.id!==l.id)})}>✕</button>
+          </div>`)}
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h">
+        <div><div class="card-t">Monthly Expenses ${h`<${Tip} k="mece"><span/><//>`}</div><div class="card-s">MECE — every dollar in exactly one category</div></div>
+        <button class="btn btn-ghost btn-sm" onClick=${()=>upd({expenses:[...d.expenses,{id:nid(),label:'New Expense',cat:'other',amount:0}]})}>+ Add</button>
+      </div>
+      ${ECATS.map(cat=>{
+        const items=d.expenses.filter(e=>e.cat===cat.id);
+        const catTotal=items.reduce((s,e)=>s+num(e.amount),0);
+        return h`<div key="${cat.id}" style="margin-bottom:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid var(--border)">
+            <div>
+              <span style="font-size:12.5px;font-weight:700;color:var(--text)">${cat.label}</span>
+              <span style="font-size:10px;color:var(--text3);margin-left:7px;display:none" class="cat-hint">${cat.hint}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:9px">
+              ${catTotal>0?h`<span style="font-size:12px;font-weight:700;color:var(--text2)">${fmt(catTotal)}/mo</span>`:null}
+              <button class="btn-add" style="width:auto;padding:3px 11px;font-size:11px" onClick=${()=>upd({expenses:[...d.expenses,{id:nid(),label:cat.label,cat:cat.id,amount:0}]})}>+ Add</button>
+            </div>
+          </div>
+          <div style="font-size:10px;color:var(--text3);margin-bottom:7px;padding-left:2px;font-style:italic">${cat.hint}</div>
+          ${items.map(e=>h`<div key="${e.id}" style="display:grid;grid-template-columns:1fr 100px 32px;gap:7px;align-items:end;margin-bottom:7px;padding-left:8px">
+            <div class="field"><label class="lbl">Label</label><input class="inp" value="${e.label}" onInput=${ev=>upd({expenses:d.expenses.map(x=>x.id===e.id?{...x,label:ev.target.value}:x)})}/></div>
+            <div class="field"><label class="lbl">$/month</label><div class="inp-p"><span class="inp-ps">$</span><input class="inp" type="number" value="${e.amount}" onInput=${ev=>upd({expenses:d.expenses.map(x=>x.id===e.id?{...x,amount:ev.target.value}:x)})}/></div></div>
+            <button class="btn-del" onClick=${()=>upd({expenses:d.expenses.filter(x=>x.id!==e.id)})}>✕</button>
+          </div>`)}
+          ${items.length===0?h`<div style="padding-left:8px;font-size:11px;color:var(--text3);font-style:italic">None added — click + Add if applicable.</div>`:null}
+        </div>`;
+      })}
+      <div class="div"/>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:13px;color:var(--text2);font-weight:600">Total Monthly Expenses</span>
+        <span style="font-family:var(--font-d);font-size:18px;color:var(--blue);font-weight:700">${fmt(totalExp)}/mo</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+        <span style="font-size:13px;color:var(--text2);font-weight:600">Projected Annual Savings</span>
+        <span style="font-family:var(--font-d);font-size:20px;color:${annualSavings>=0?'var(--green)':'var(--red)'};font-weight:700">${fmt(annualSavings)}</span>
+      </div>
+      <div class="fn">Annual Savings = Net Take-Home − (Expenses×12) − (Retirement×12) − (Debt Payments×12)</div>
+    </div>
+  </div>`;
+}
+
+// ─── TAX TAB ──────────────────────────────────────────────────────────────────
+function TaxTab({d,budget,prices}){
+  const{w2,se,passive,gross,pre401k,tradIRA,hsaDed,seDed,slIntDed,agi,stdDed,ded,credits,taxable,fedTax:ft,fica,stateTax,totalTax,marginal,effective}=budget;
+  const getP=hh=>prices[hh.ticker?.toUpperCase()]?.price||num(hh.price);
+  const ltGain=d.accounts.filter(a=>!TAX_ADV.includes(a.type)).flatMap(a=>a.holdings).filter(h=>h.gainType==='long').reduce((s,h)=>s+Math.max(0,num(h.shares)*getP(h)-num(h.shares)*num(h.cost)),0);
+  const stGain=d.accounts.filter(a=>!TAX_ADV.includes(a.type)).flatMap(a=>a.holdings).filter(h=>h.gainType==='short').reduce((s,h)=>s+Math.max(0,num(h.shares)*getP(h)-num(h.shares)*num(h.cost)),0);
+  const divInc=d.accounts.filter(a=>!TAX_ADV.includes(a.type)).flatMap(a=>a.holdings).reduce((s,h)=>s+num(h.shares)*num(h.div),0);
+  const ltTx=ltcgTax(ltGain,taxable,d.filingStatus);
+  const stTx=stGain*marginal;
+  const niitTx=niit(divInc+ltGain+stGain,agi,d.filingStatus);
+  const totalAll=totalTax+ltTx+niitTx;
+  const TR=({label,value,color='',sub=false,tot=false})=>h`<div class="${`tax-row${sub?' sub':''}${tot?' tot':''}`}"><span class="tax-l">${label}</span><span class="${`tax-v ${color}`}">${value}</span></div>`;
+  return h`<div class="stack fu">
+    <div class="ins b"><div class="ins-l">📅 2026 Tax Data</div><p>Standard deduction: ${fmt(STD.single)} (single) / ${fmt(STD.married)} (MFJ). FICA SS base: $${SS_BASE.toLocaleString()}. 401(k) limit: $23,500. IRA: $7,000. HSA single: $4,300.</p></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-t">Income → Taxable Income</div><div class="card-s">Step by step</div>
+        ${h`<${TR} label="W-2 Wages & Salary" value=${fmt(w2)}/>`}
+        ${se>0?h`<${TR} label="Self-Employment Income" value=${fmt(se)}/>`:null}
+        ${passive>0?h`<${TR} label="Other Income" value=${fmt(passive)}/>`:null}
+        ${h`<${TR} label="= Gross Income" value=${fmt(gross)} color="a"/>`}
+        <div class="div"/>
+        ${h`<${TR} label="− Pre-Tax 401(k)" value=${`(${fmt(pre401k)})`} color="g"/>`}
+        ${tradIRA>0?h`<${TR} label="− Traditional IRA" value=${`(${fmt(tradIRA)})`} color="g"/>`:null}
+        ${hsaDed>0?h`<${TR} label="− HSA Deduction" value=${`(${fmt(hsaDed)})`} color="g"/>`:null}
+        ${seDed>0?h`<${TR} label="− SE Tax Deduction (50%)" value=${`(${fmt(seDed)})`} color="g"/>`:null}
+        ${slIntDed>0?h`<${TR} label="− Student Loan Interest" value=${`(${fmt(slIntDed)})`} color="g"/>`:null}
+        ${h`<${TR} label="= AGI" value=${fmt(agi)} color="a"/>`}
+        <div class="div"/>
+        ${h`<${TR} label=${d.itemize?'− Itemized Deductions':`− Standard Deduction`} value=${`(${fmt(ded)})`} color="g"/>`}
+        ${h`<${TR} label="= Federal Taxable Income" value=${fmt(taxable)} color="r"/>`}
+        <div class="fn">${h`<${Tip} k="agi">AGI<//>`}: Gross minus above-the-line deductions. Standard deduction for ${d.filingStatus}: ${fmt(stdDed)}.</div>
+      </div>
+      <div class="card">
+        <div class="card-t">Tax Calculation</div><div class="card-s">All components</div>
+        ${h`<${TR} label="Federal Income Tax (brackets)" value=${fmt(ft)} color="r"/>`}
+        ${h`<${TR} label="  Social Security (6.2% × min wages,$176,100)" value=${fmt(fica.ss)} sub=${true}/>`}
+        ${h`<${TR} label="  Medicare (1.45% × wages)" value=${fmt(fica.med)} sub=${true}/>`}
+        ${fica.addl>0?h`<${TR} label="  Addl Medicare (0.9% over threshold)" value=${fmt(fica.addl)} sub=${true}/>`:null}
+        ${h`<${TR} label="FICA Total" value=${fmt(fica.total)} color="r"/>`}
+        ${h`<${TR} label=${`State Tax (${d.stateRate}% × AGI)`} value=${fmt(stateTax)} color="r"/>`}
+        ${credits>0?h`<${TR} label="− Tax Credits" value=${`(${fmt(credits)})`} color="g"/>`:null}
+        ${h`<${TR} label="Ordinary Income Tax Total" value=${fmt(totalTax)} tot=${true}/>`}
+        <div class="div"/>
+        ${h`<${TR} label=${`Long-Term Cap Gains Tax (${fmt(ltGain)} gains)`} value=${fmt(ltTx)} color="a"/>`}
+        ${stGain>0?h`<${TR} label=${`Short-Term Cap Gains (${fmt(stGain)})`} value=${fmt(stTx)} color="r"/>`:null}
+        ${niitTx>0?h`<${TR} label="Net Investment Income Tax (3.8%)" value=${fmt(niitTx)} color="a"/>`:null}
+        ${h`<${TR} label="TOTAL ESTIMATED TAX BILL" value=${fmt(totalAll)} color="r" tot=${true}/>`}
+        <div style="display:flex;gap:9px;margin-top:12px">
+          ${[['Effective Rate',pct(gross>0?totalAll/gross:0),'var(--green)'],['Marginal Rate',pct(marginal),'var(--amber)']].map(([l,v,c])=>h`<div style="flex:1;background:var(--surface2);border-radius:8px;padding:10px 12px">
+            <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;font-weight:700;margin-bottom:2px">${l}</div>
+            <div style="font-family:var(--font-d);font-size:18px;color:${c};font-weight:700">${v}</div>
+          </div>`)}
+        </div>
+        <div class="fn">Federal = progressive brackets. FICA SS = 6.2% × min(wages,$176,100). Medicare = 1.45%. Additional Medicare = 0.9% on wages over $200k. LTCG uses stacking method — gains layered on top of ordinary income for correct rate.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-t">2026 Federal Tax Brackets — ${d.filingStatus==='married'?'Married Filing Jointly':d.filingStatus==='hoh'?'Head of Household':'Single'}</div>
+      <div class="card-s">Highlighted rows = where your income falls</div>
+      <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Rate</th><th>Range</th><th class="r">Your Income Here</th><th class="r">Tax in Bracket</th></tr></thead>
+        <tbody>${(BR[d.filingStatus]||BR.single).reduce((acc,[lim,rate],i,arr)=>{
+          const low=i===0?0:arr[i-1][0];
+          const inB=Math.max(0,Math.min(taxable,lim)-low);
+          const taxB=inB*rate;
+          const active=inB>0;
+          acc.push(h`<tr key="${i}" style="${active?'background:var(--green-bg);font-weight:600':''}">
+            <td><span class="${`badge ${rate>=.32?'br':rate>=.22?'ba':'bg'}`}">${pct(rate,0)}</span></td>
+            <td style="font-size:11px;color:var(--text2)">${fmt(low)} – ${lim===Infinity?'∞':fmt(lim)}</td>
+            <td class="r">${inB>0?fmt(inB):'—'}</td>
+            <td class="r" style="${taxB>0?'color:var(--red)':''}">${taxB>0?fmt(taxB):'—'}</td>
+          </tr>`);
+          return acc;
+        },[])}
+        </tbody>
+      </table></div>
+      <div class="fn">Each bracket only taxes the income within that range — not your whole income. The marginal rate is only on the last dollar you earn.</div>
+    </div>
+  </div>`;
+}
+
+// ─── INVESTMENTS (simplified for mobile) ─────────────────────────────────────
+async function fetchQ(ticker,key){
+  if(!key||!ticker)return null;
+  try{const r=await fetch(`https://finnhub.io/api/v1/quote?symbol=${ticker.toUpperCase()}&token=${key}`);const d=await r.json();return d.c>0?{price:d.c,change:d.d,pct:d.dp}:null}catch{return null}
+}
+const RP=[{l:'Conservative',r:5,v:8},{l:'Moderate',r:7,v:12},{l:'Growth',r:9,v:16},{l:'Aggressive',r:12,v:22}];
+function InvestTab({d,upd,prices,setPrices,budget}){
+  const[sub,setSub]=useState('accounts');
+  const[loading,setLoading]=useState(false);
+  const idR=useRef(200);const nid=()=>`h${++idR.current}`;
+  const getP=hh=>prices[hh.ticker?.toUpperCase()]?.price||num(hh.price);
+  const allH=d.accounts.flatMap((a,ai)=>a.holdings.map(hh=>({...hh,acctName:a.name,acctType:a.type,ai})));
+  const totPort=allH.reduce((s,hh)=>s+num(hh.shares)*getP(hh),0);
+  const totCost=allH.reduce((s,hh)=>s+num(hh.shares)*num(hh.cost),0);
+  const totDivs=allH.reduce((s,hh)=>s+num(hh.shares)*num(hh.div),0);
+  const wRet=totPort>0?allH.reduce((s,hh)=>{const mv=num(hh.shares)*getP(hh);return s+(mv/totPort)*num(hh.expRet)},0):0;
+  const portVol=totPort>0?Math.sqrt(allH.reduce((s,hh)=>{const w=num(hh.shares)*getP(hh)/totPort;return s+Math.pow(w*(num(hh.vol)||15),2)},0)):0;
+  const sharpe=portVol>0?(wRet-4.3)/portVol:0;
+  const retVal=d.accounts.filter(a=>TAX_ADV.includes(a.type)).flatMap(a=>a.holdings).reduce((s,hh)=>s+num(hh.shares)*getP(hh),0);
+  const yrs=Math.max(1,d.retireAge-d.age);
+  const rp=RP[d.riskProfile||1];
+  const retContrib=Object.values(d.retirement).reduce((s,v)=>s+num(v),0)*12;
+  const retProj=Array.from({length:yrs+1},(_,i)=>fvL(retVal,rp.r/100,i)+fvA(retContrib,rp.r/100,i));
+  const ltGain=d.accounts.filter(a=>!TAX_ADV.includes(a.type)).flatMap(a=>a.holdings).filter(h=>h.gainType==='long').reduce((s,h)=>s+Math.max(0,num(h.shares)*getP(h)-num(h.shares)*num(h.cost)),0);
+  const stGain=d.accounts.filter(a=>!TAX_ADV.includes(a.type)).flatMap(a=>a.holdings).filter(h=>h.gainType==='short').reduce((s,h)=>s+Math.max(0,num(h.shares)*getP(h)-num(h.shares)*num(h.cost)),0);
+  const ltTx=ltcgTax(ltGain,budget.taxable,d.filingStatus);
+  const refresh=async()=>{
+    if(!d.finnhubKey)return;setLoading(true);
+    const tickers=[...new Set(allH.map(h=>h.ticker?.toUpperCase()).filter(Boolean))];
+    const res={};
+    for(const t of tickers){const q=await fetchQ(t,d.finnhubKey);if(q)res[t]=q;}
+    setPrices(res);setLoading(false);
+  };
+  const addA=()=>upd({accounts:[...d.accounts,{id:`a${Date.now()}`,name:'New Account',type:'Taxable Brokerage',holdings:[]}]});
+  const updA=(id,f,v)=>upd({accounts:d.accounts.map(a=>a.id===id?{...a,[f]:v}:a)});
+  const delA=id=>upd({accounts:d.accounts.filter(a=>a.id!==id)});
+  const addH=aid=>upd({accounts:d.accounts.map(a=>a.id===aid?{...a,holdings:[...a.holdings,{id:nid(),ticker:'',name:'',shares:'',price:'',cost:'',div:'',expRet:'8',vol:'15',gainType:'long'}]}:a)});
+  const updH=(aid,hid,f,v)=>upd({accounts:d.accounts.map(a=>a.id===aid?{...a,holdings:a.holdings.map(hh=>hh.id===hid?{...hh,[f]:v}:hh)}:a)});
+  const delH=(aid,hid)=>upd({accounts:d.accounts.map(a=>a.id===aid?{...a,holdings:a.holdings.filter(hh=>hh.id!==hid)}:a)});
+  return h`<div class="stack fu">
+    <div class="stabs">${[['accounts','Accounts'],['gains','Taxable Gains'],['retirement','Retirement'],['insights','Insights']].map(([id,l])=>h`<button key="${id}" class="${`stab${sub===id?' on':''}`}" onClick=${()=>setSub(id)}>${l}</button>`)}</div>
+    <div class="card" style="padding:12px 14px">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="field" style="flex:1;min-width:180px"><label class="lbl">Finnhub API Key (pre-loaded)</label><input class="inp" type="password" value="${d.finnhubKey}" onInput=${e=>upd({finnhubKey:e.target.value})} placeholder="pk_..."/></div>
+        <button class="btn btn-green" style="margin-top:18px;white-space:nowrap" onClick=${refresh} disabled="${!d.finnhubKey||loading}">${loading?'⏳ Loading...':'🔄 Refresh Live Prices'}</button>
+        ${Object.keys(prices).length>0?h`<span style="font-size:10.5px;color:var(--green);margin-top:18px">✓ ${Object.keys(prices).length} live</span>`:null}
+      </div>
+    </div>
+    <div class="g4">
+      ${[['Portfolio',fmt(totPort),'#1a4f8a',allH.length+' holdings'],['Total Gain',fmt(totPort-totCost),totPort-totCost>=0?'#1a6b42':'#c0392b',totCost>0?pct((totPort-totCost)/totCost)+' return':'—'],['Annual Divs',fmt(totDivs),'#9a6b1a',fmt(totDivs/12)+'/mo'],['Sharpe',sharpe.toFixed(2),sharpe>=1?'#1a6b42':sharpe>=.5?'#9a6b1a':'#c0392b','vs 4.3% risk-free']].map(([l,v,c,m])=>h`<div class="stat"><div class="stat-bar" style="background:${c}"/><div class="stat-l">${l}</div><div class="stat-v" style="color:${c}">${v}</div><div class="stat-m">${m}</div></div>`)}
+    </div>
+    ${sub==='accounts'&&h`<div class="stack">
+      ${d.accounts.map((a,ai)=>{
+        const ac=ACOLS[ai%ACOLS.length];
+        const aVal=a.holdings.reduce((s,hh)=>s+num(hh.shares)*getP(hh),0);
+        const aCost=a.holdings.reduce((s,hh)=>s+num(hh.shares)*num(hh.cost),0);
+        const aGain=aVal-aCost;
+        const isTA=TAX_ADV.includes(a.type);
+        const isR=ROTH.includes(a.type);
+        return h`<div class="card" key="${a.id}">
+          <div class="card-h">
+            <div style="display:flex;gap:9px;align-items:center">
+              <div style="width:3px;height:36px;border-radius:2px;background:${ac}"/>
+              <div>
+                <input class="ti" style="font-family:var(--font-d);font-size:14px;font-weight:700;display:block;margin-bottom:2px" value="${a.name}" onInput=${e=>updA(a.id,'name',e.target.value)}/>
+                <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">
+                  <select value="${a.type}" onChange=${e=>updA(a.id,'type',e.target.value)} style="background:none;border:none;color:var(--text3);font-size:10px;font-family:var(--font)">${ATYPES.map(t=>h`<option>${t}</option>`)}</select>
+                  ${isTA?h`<span class="${`badge ${isR?'bp':'ba'}`}">${isR?'Roth':'Tax-Deferred'}</span>`:null}
+                </div>
+              </div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-family:var(--font-d);font-size:16px;color:${ac};font-weight:700">${fmt(aVal)}</div>
+              <div style="font-size:10px;color:${aGain>=0?'var(--green)':'var(--red)'}">${aGain>=0?'↑':'↓'} ${fmt(Math.abs(aGain))}</div>
+              ${isR?h`<div style="font-size:9px;color:var(--purple)">Tax-free growth</div>`:null}
+              ${isTA&&!isR?h`<div style="font-size:9px;color:var(--amber)">Taxed on withdrawal</div>`:null}
+              ${!isTA?h`<div style="font-size:9px;color:var(--text3)">Cap gains apply</div>`:null}
+              <button class="btn-del" style="font-size:10px;margin-top:2px" onClick=${()=>delA(a.id)}>Remove</button>
+            </div>
+          </div>
+          <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Ticker</th><th>Name</th><th class="r">Shares</th><th class="r">Price</th><th class="r">Cost</th><th class="r">Value</th><th class="r">Gain</th><th class="r">Div</th><th class="r">Exp%</th><th>Hold</th><th></th></tr></thead>
+            <tbody>${a.holdings.map(hh=>{
+              const lp=prices[hh.ticker?.toUpperCase()];
+              const up=lp?.price||num(hh.price);
+              const mv=num(hh.shares)*up,cost=num(hh.shares)*num(hh.cost),gain=mv-cost;
+              return h`<tr key="${hh.id}">
+                <td style="font-weight:700"><input class="ti" style="width:50px" value="${hh.ticker}" onInput=${e=>updH(a.id,hh.id,'ticker',e.target.value)} placeholder="VTI"/></td>
+                <td><input class="ti" style="width:100px" value="${hh.name}" onInput=${e=>updH(a.id,hh.id,'name',e.target.value)}/></td>
+                <td class="r"><input class="ti" type="number" style="width:55px;text-align:right" value="${hh.shares}" onInput=${e=>updH(a.id,hh.id,'shares',e.target.value)}/></td>
+                <td class="r"><div><input class="ti" type="number" style="width:55px;text-align:right" value="${hh.price}" onInput=${e=>updH(a.id,hh.id,'price',e.target.value)}/>${lp?h`<div style="font-size:9px;color:var(--green)">Live $${lp.price.toFixed(2)}</div>`:null}</div></td>
+                <td class="r"><input class="ti" type="number" style="width:55px;text-align:right" value="${hh.cost}" onInput=${e=>updH(a.id,hh.id,'cost',e.target.value)}/></td>
+                <td class="r" style="font-weight:700">${fmt(mv)}</td>
+                <td class="r"><span style="color:${gain>=0?'var(--green)':'var(--red)'};font-weight:700">${fmt(gain)}</span></td>
+                <td class="r"><input class="ti" type="number" style="width:45px;text-align:right" value="${hh.div}" onInput=${e=>updH(a.id,hh.id,'div',e.target.value)}/></td>
+                <td class="r"><input class="ti" type="number" style="width:40px;text-align:right" value="${hh.expRet}" onInput=${e=>updH(a.id,hh.id,'expRet',e.target.value)}/></td>
+                <td><select value="${hh.gainType}" onChange=${e=>updH(a.id,hh.id,'gainType',e.target.value)} style="background:none;border:none;color:var(--text3);font-size:10px;font-family:var(--font)"><option value="long">Long</option><option value="short">Short</option></select></td>
+                <td><button class="btn-del" onClick=${()=>delH(a.id,hh.id)}>✕</button></td>
+              </tr>`;
+            })}</tbody>
+          </table></div>
+          <button class="btn-add" style="margin-top:8px" onClick=${()=>addH(a.id)}>+ Add Holding</button>
+        </div>`;
+      })}
+      <button class="btn-add" onClick=${addA}>+ Add Account</button>
+      <div class="fn">Sharpe = (Weighted Return − 4.3%) ÷ Portfolio Volatility. Volatility = √Σ(weight × vol)². These use your manual inputs as estimates.</div>
+    </div>`}
+    ${sub==='gains'&&h`<div class="stack">
+      <div class="ins b"><div class="ins-l">Retirement accounts have NO capital gains tax</div><p>401(k), IRA, Roth — gains inside grow tax-deferred or tax-free. Only taxable brokerage positions shown below.</p></div>
+      <div class="g2">
+        ${[['Long-Term Gains','var(--green-bg)','var(--green-lt)','var(--green)',ltGain,ltTx,'ltcg','Held 12+ months. Rate: 0%, 15%, or 20%.'],
+           ['Short-Term Gains','var(--amber-bg)','var(--amber-lt)','var(--amber)',stGain,stGain*marginal,'stcg','Held <12 months. Taxed at marginal rate.']
+        ].map(([title,bg,brd,c,gain,tax,tip,desc])=>h`<div style="background:${bg};border:1px solid ${brd};border-radius:var(--r);padding:16px">
+          <div style="font-size:9.5px;color:${c};text-transform:uppercase;letter-spacing:0.08em;font-weight:800;margin-bottom:5px">${h`<${Tip} k="${tip}">${title}</>`}</div>
+          <div style="font-family:var(--font-d);font-size:19px;font-weight:700;margin-bottom:4px">${fmt(gain)}</div>
+          <div style="font-size:12px;color:var(--text2)">Est. tax if sold: <strong style="color:var(--red)">${fmt(tax)}</strong></div>
+          <div style="font-size:10px;color:var(--text3);margin-top:4px">${desc}</div>
+        </div>`)}
+      </div>
+      <div class="card"><div class="card-t">Taxable Holdings — Tax Detail</div>
+        <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Ticker</th><th>Account</th><th>Hold</th><th class="r">Gain</th><th class="r">Est. Tax</th><th class="r">After-Tax</th></tr></thead>
+          <tbody>${d.accounts.filter(a=>!TAX_ADV.includes(a.type)).flatMap(a=>a.holdings.map(hh=>({...hh,acctName:a.name}))).map(hh=>{
+            const mv=num(hh.shares)*getP(hh),cost=num(hh.shares)*num(hh.cost),gain=mv-cost;
+            const tax=gain>0?(hh.gainType==='long'?ltcgTax(gain,budget.taxable,d.filingStatus):gain*marginal):0;
+            return h`<tr key="${hh.id}"><td style="font-weight:700">${hh.ticker||'—'}</td><td style="font-size:10px">${hh.acctName}</td>
+              <td><span class="${`badge ${hh.gainType==='long'?'bg':'ba'}`}">${hh.gainType==='long'?'Long':'Short'}</span></td>
+              <td class="r"><span style="color:${gain>=0?'var(--green)':'var(--red)'};font-weight:700">${fmt(gain)}</span></td>
+              <td class="r" style="color:var(--red)">${gain>0?fmt(tax):'—'}</td>
+              <td class="r" style="color:var(--green);font-weight:700">${fmt(mv-Math.max(0,tax))}</td>
+            </tr>`;
+          })}</tbody>
+        </table></div>
+        <div class="fn">LTCG uses stacking method. STCG = gain × ${pct(marginal)} marginal rate. Assumes all positions sold in current year.</div>
+      </div>
+    </div>`}
+    ${sub==='retirement'&&h`<div class="stack">
+      <div class="g2">
+        <div class="card"><div class="card-t">Retirement Settings</div>
+          <div class="frow" style="margin-bottom:12px">
+            <div class="field"><label class="lbl">Current Age</label><input class="inp" type="number" value="${d.age}" onInput=${e=>upd({age:num(e.target.value)})}/></div>
+            <div class="field"><label class="lbl">Retire At Age</label><input class="inp" type="number" value="${d.retireAge}" onInput=${e=>upd({retireAge:num(e.target.value)})}/></div>
+          </div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap">
+            ${RP.map((p,i)=>h`<button key="${i}" onClick=${()=>upd({riskProfile:i})} style="padding:5px 12px;border-radius:999px;border:1.5px solid ${d.riskProfile===i?'var(--green)':'var(--border)'};background:${d.riskProfile===i?'var(--green-bg)':'none'};color:${d.riskProfile===i?'var(--green)':'var(--text2)'};font-size:11px;font-weight:700;font-family:var(--font)">${p.l} ${p.r}%</button>`)}
+          </div>
+        </div>
+        <div class="card"><div class="card-t">Retirement Projection</div><div class="card-s">Age ${d.retireAge} · ${rp.l}</div>
+          ${h`<${Spark} data=${retProj} color="#5a3d8a" h=${80}/>`}
+          <div style="display:flex;justify-content:space-between;margin:6px 0 10px">
+            <span style="font-size:10.5px;color:var(--text3)">Today: ${fmt(retVal)}</span>
+            <span style="font-size:10.5px;color:var(--purple);font-weight:700">Age ${d.retireAge}: ${fmt(retProj[yrs])}</span>
+          </div>
+          <div class="ins g"><div class="ins-l">4% Withdrawal ${h`<${Tip} k="safe4"><span/></>`}</div><p>${fmt(retProj[yrs]*.04)}/yr · ${fmt(retProj[yrs]*.04/12)}/mo</p></div>
+          <div class="fn">FV = PV×(1+r)^n + PMT×((1+r)^n−1)/r. r=${rp.r}%/yr, n=${yrs}yrs. Actual returns will vary.</div>
+        </div>
+      </div>
+    </div>`}
+    ${sub==='insights'&&h`<div class="stack">
+      ${(()=>{
+        const ins=[];
+        if(sharpe<.5&&totPort>0)ins.push({t:'a',title:'Low Sharpe Ratio',msg:`Sharpe of ${sharpe.toFixed(2)} indicates high risk relative to returns. Consider diversifying with bond ETFs (BND, AGG).`});
+        if(sharpe>=1.5)ins.push({t:'g',title:'Strong Risk-Adjusted Returns',msg:`Sharpe of ${sharpe.toFixed(2)} — solid returns per unit of risk.`});
+        const top=[...allH].sort((a,b)=>num(b.shares)*getP(b)-num(a.shares)*getP(a))[0];
+        if(top&&totPort>0&&(num(top.shares)*getP(top))/totPort>.4)ins.push({t:'r',title:'Concentration Risk',msg:`${top.ticker} is ${pct((num(top.shares)*getP(top))/totPort)} of your portfolio. High single-stock concentration increases risk.`});
+        if(totDivs/Math.max(totPort,1)<.01&&totPort>0)ins.push({t:'b',title:'Low Dividend Yield',msg:'Under 1% dividend yield. SCHD or VYM could add meaningful passive income.'});
+        if(ins.length===0)ins.push({t:'g',title:'Looking Good!',msg:'Portfolio appears balanced. Add more holdings for deeper analysis.'});
+        return ins.map((i,idx)=>h`<div key="${idx}" class="${`ins ${i.t}`}"><div class="ins-l">${i.title}</div><p>${i.msg}</p></div>`);
+      })()}
+    </div>`}
+  </div>`;
+}
+
+// ─── NET WORTH ────────────────────────────────────────────────────────────────
+function NetWorthTab({d,budget,prices,inflOn,inflRate}){
+  const getP=hh=>prices[hh.ticker?.toUpperCase()]?.price||num(hh.price);
+  const allH=d.accounts.flatMap(a=>a.holdings);
+  const totPort=allH.reduce((s,hh)=>s+num(hh.shares)*getP(hh),0);
+  const retVal=d.accounts.filter(a=>TAX_ADV.includes(a.type)).flatMap(a=>a.holdings).reduce((s,hh)=>s+num(hh.shares)*getP(hh),0);
+  const taxVal=totPort-retVal;
+  const cash=num(d.checkingBal)+num(d.savingsBal)+num(d.emergencyFund);
+  const totLiab=d.liabilities.reduce((s,l)=>s+num(l.balance),0);
+  const nomNW=totPort+cash-totLiab;
+  const ir=inflRate/100;
+  const projRows=buildProjection({budget,d,prices,inflRate:ir,years:30});
+  const nomProj=projRows.map(r=>r.nomNW);
+  const realProj=projRows.map(r=>r.realNW);
+  return h`<div class="stack fu">
+    <div class="g4">
+      ${[['Net Worth',nomNW,inflOn?realVal(nomNW,ir,0):null,'Assets − Liabilities','#1a6b42'],
+         ['Total Assets',totPort+cash,null,'Portfolio + Cash','#1a4f8a'],
+         ['Total Liabilities',totLiab,null,d.liabilities.length+' debts','#c0392b'],
+      ].map(([l,v,rl,m,c])=>h`<div class="stat"><div class="stat-bar" style="background:${c}"/><div class="stat-l">${l}</div><div class="stat-v">${fmt(v)}</div>${inflOn&&rl!==null?h`<div class="stat-v infl">${fmt(rl)} <span class="infl-badge">real</span></div>`:null}<div class="stat-m">${m}</div></div>`)}
+      <div class="stat"><div class="stat-bar" style="background:#9a6b1a"/><div class="stat-l">Debt-to-Asset Ratio</div><div class="stat-v">${(totPort+cash)>0?pct(totLiab/(totPort+cash)):'—'}</div><div class="${`stat-m ${totLiab/(totPort+cash)<.3?'up':'dn'}`}">${totLiab/(totPort+cash)<.3?'Healthy':'Monitor'}</div></div>
+    </div>
+    <div class="g2">
+      <div class="card"><div class="card-t">Assets Breakdown</div><div class="card-s">Complete picture</div>
+        ${h`<${Donut} ctr=${fmt(totPort+cash)} sub="total assets" slices=${[
+          {label:'Taxable Investments',value:taxVal,color:'#1a4f8a'},
+          {label:'Retirement Accounts',value:retVal,color:'#5a3d8a'},
+          {label:'Checking',value:num(d.checkingBal),color:'#1a6b42'},
+          {label:'Savings / HYSA',value:num(d.savingsBal),color:'#1a6b62'},
+          {label:'Emergency Fund',value:num(d.emergencyFund),color:'#9a6b1a'},
+        ].filter(s=>s.value>0)}/>`}
+      </div>
+      <div class="card">
+        <div class="card-t">30-Year Net Worth${inflOn?' — Nominal & Real':''}</div><div class="card-s">${inflOn?`Real = inflation-adj at ${inflRate}%/yr`:'Nominal projection'}</div>
+        ${h`<${Spark} data=${nomProj} data2=${inflOn?realProj:null} h=${100}/>`}
+        <div style="display:flex;justify-content:space-between;margin-top:7px">
+          <span style="font-size:10.5px;color:var(--text3)">Today: ${fmt(nomNW)}</span>
+          <span style="font-size:10.5px;color:var(--green);font-weight:700">Yr 30: ${fmt(nomProj[30])}</span>
+        </div>
+        ${inflOn?h`<div style="text-align:right;margin-top:3px"><span style="font-size:10px;color:var(--purple);font-weight:600">Real Yr 30: ${fmt(realProj[30])}</span></div>`:null}
+        ${inflOn?h`<div style="margin-top:9px;padding:9px 12px;background:var(--purple-bg);border-radius:7px;font-size:11px;color:var(--purple)">💡 At ${inflRate}%/yr inflation, ${fmt(nomProj[30])} in 30 years = ${fmt(realProj[30])} in today's purchasing power.</div>`:null}
+        <div class="fn">Real = Nominal ÷ (1+${ir})^n. Portfolio compounds at weighted avg expected return. Savings and liabilities accounted for each year.</div>
+      </div>
+    </div>
+    ${d.liabilities.length>0?h`<div class="card"><div class="card-t">Debt Payoff Analysis</div><div class="card-s">Payoff timeline & total interest</div>
+      <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Debt</th><th class="r">Balance</th><th class="r">Rate</th><th class="r">Pmt/mo</th><th class="r">Payoff Yr</th><th class="r">Total Interest</th></tr></thead>
+        <tbody>${d.liabilities.map(l=>{
+          const bal=num(l.balance),rate=num(l.rate)/100/12,pmt=num(l.payment);
+          const mos=rate>0&&pmt>bal*rate?-Math.log(1-bal*rate/pmt)/Math.log(1+rate):pmt>0?bal/pmt:0;
+          const yr=new Date().getFullYear()+Math.ceil(mos/12);
+          const interest=pmt*mos-bal;
+          return h`<tr key="${l.id}"><td style="font-weight:600">${l.label}</td>
+            <td class="r" style="color:var(--red);font-weight:700">${fmt(bal)}</td>
+            <td class="r">${num(l.rate).toFixed(1)}%</td>
+            <td class="r">${fmt(pmt)}</td>
+            <td class="r">${mos>0?yr:'—'}</td>
+            <td class="r" style="color:var(--amber)">${interest>0?fmt(interest):'—'}</td>
+          </tr>`;
+        })}</tbody>
+      </table></div>
+      <div class="fn">Payoff months = −ln(1 − balance × monthlyRate ÷ payment) ÷ ln(1+monthlyRate). Total interest = (payment × months) − original balance.</div>
+    </div>`:null}
+  </div>`;
+}
+
+// ─── LIFE TIMELINE ────────────────────────────────────────────────────────────
+function TimelineTab({d,upd,budget,prices,inflOn,inflRate}){
+  const[view,setView]=useState('map');
+  const idR=useRef(300);const nid=()=>++idR.current;
+  const curYear=new Date().getFullYear();
+  const ir=inflRate/100;
+  const projRows=buildProjection({budget,d,prices,inflRate:ir,years:40});
+  const sorted=[...d.timeline].sort((a,b)=>Number(a.year)-Number(b.year));
+  return h`<div class="stack fu">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <div>
+        <div style="font-family:var(--font-d);font-size:18px">Life Timeline & Net Worth Map</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px">How your milestones impact net worth over time</div>
+      </div>
+      <div style="display:flex;gap:6px">
+        ${[['map','🗺 Map'],['table','📋 Table'],['edit','✏️ Edit']].map(([id,l])=>h`<button key="${id}" class="${`stab${view===id?' on':''}`}" onClick=${()=>setView(id)}>${l}</button>`)}
+      </div>
+    </div>
+    ${view==='map'&&h`<div class="stack">
+      <div class="card">
+        <div class="card-t">Net Worth Over Time${inflOn?' — Nominal & Real':''}</div><div class="card-s">Including all milestone impacts</div>
+        ${h`<${Spark} data=${projRows.map(r=>r.nomNW)} data2=${inflOn?projRows.map(r=>r.realNW):null} h=${110}/>`}
+        <div style="display:flex;justify-content:space-between;margin-top:7px;flex-wrap:wrap;gap:5px">
+          <span style="font-size:10.5px;color:var(--text3)">Age ${d.age} (now): ${fmt(projRows[0]?.nomNW)}</span>
+          <span style="font-size:10.5px;color:var(--green);font-weight:700">Age ${d.age+40}: ${fmt(projRows[40]?.nomNW)}</span>
+        </div>
+        ${inflOn?h`<div style="text-align:right;margin-top:2px"><span style="font-size:10px;color:var(--purple);font-weight:600">Real (age ${d.age+40}): ${fmt(projRows[40]?.realNW)}</span></div>`:null}
+        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:12px">
+          ${sorted.map(m=>{
+            const rowIdx=Math.min(Math.max(Number(m.year)-curYear,0),40);
+            const row=projRows[rowIdx];
+            return h`<div key="${m.id}" style="display:flex;align-items:center;gap:4px;background:var(--surface2);border-radius:6px;padding:3px 9px">
+              <span style="font-size:12px">${MI_ICO[m.cat]||'📌'}</span>
+              <span style="font-size:10px;color:var(--text2);font-weight:600">${m.year}: ${m.label}</span>
+              ${row?h`<span style="font-size:10px;color:var(--green);font-weight:700;margin-left:4px">${fmt(row.nomNW)}</span>`:null}
+            </div>`;
+          })}
+        </div>
+        <div class="fn">NW(n) = Portfolio(n) + Cash − Liabilities(n). Portfolio grows at weighted avg return and adds annual savings. One-time costs reduce portfolio in the year they occur. Monthly deltas compound forward permanently. ${inflOn?`Real = Nominal ÷ (1+${ir})^n.`:''}</div>
+      </div>
+      <div class="stack">
+        ${sorted.map((m,idx)=>{
+          const yr=Number(m.year);
+          const rowIdx=Math.min(Math.max(yr-curYear,0),40);
+          const row=projRows[rowIdx];
+          const prevRow=rowIdx>0?projRows[rowIdx-1]:projRows[0];
+          const nwDelta=row&&prevRow?row.nomNW-prevRow.nomNW:0;
+          const isPast=yr<=curYear;
+          const isNext=idx===0&&!isPast;
+          return h`<div key="${m.id}" class="vtl-item">
+            <div class="vtl-left">
+              <div class="vtl-yr">${m.year}</div>
+              <div class="vtl-icon" style="background:${MI_COL[m.cat]||'#6b6457'}"><span>${MI_ICO[m.cat]||'📌'}</span></div>
+              ${idx<sorted.length-1?h`<div class="vtl-line"/>`:null}
+            </div>
+            <div class="vtl-body">
+              <div class="${`vtl-card${isNext?' hl':''}`}">
+                <div class="vtl-name">
+                  ${m.label}
+                  ${isPast?h`<span class="badge ba">Past</span>`:null}
+                  ${!isPast&&yr-curYear<=2?h`<span class="badge bg">Soon</span>`:null}
+                  <span style="font-size:11px;color:var(--text3);font-weight:400">Age ${d.age+(yr-curYear)}</span>
+                </div>
+                <div class="vtl-chips">
+                  ${num(m.cost)>0?h`<span class="vtl-chip br" style="background:var(--red-bg)">💸 One-time: ${fmt(num(m.cost))}</span>`:null}
+                  ${num(m.monthlyDelta)!==0?h`<span class="vtl-chip ${num(m.monthlyDelta)>0?'br':'bg'}" style="background:${num(m.monthlyDelta)>0?'var(--amber-bg)':'var(--green-bg)'}">${num(m.monthlyDelta)>0?'↑':'↓'} Monthly spend: ${num(m.monthlyDelta)>0?'+':''}${fmt(num(m.monthlyDelta))}/mo</span>`:null}
+                  ${num(m.cost)===0&&num(m.monthlyDelta)===0?h`<span class="vtl-chip bb" style="background:var(--blue-bg);color:var(--blue)">No financial impact entered</span>`:null}
+                </div>
+                ${row?h`<div class="vtl-impact">
+                  <div class="vtl-impact-item"><div class="vtl-impact-lbl">Net Worth at this point</div><div class="vtl-impact-val" style="color:${row.nomNW>=0?'var(--green)':'var(--red)'}">${fmt(row.nomNW)}${inflOn?h`<span style="font-size:10px;color:var(--purple);font-weight:600;margin-left:7px">Real: ${fmt(row.realNW)}</span>`:null}</div></div>
+                  <div class="vtl-impact-item"><div class="vtl-impact-lbl">Monthly savings then</div><div class="vtl-impact-val" style="color:${row.effMonthlySav>=0?'var(--green)':'var(--red)'}">${fmt(row.effMonthlySav)}/mo</div></div>
+                  ${num(m.cost)>0?h`<div class="vtl-impact-item"><div class="vtl-impact-lbl">Net worth change</div><div class="vtl-impact-val" style="color:${nwDelta>=0?'var(--green)':'var(--red)'}">${nwDelta>=0?'+':''}${fmt(nwDelta)}</div></div>`:null}
+                </div>`:null}
+              </div>
+            </div>
+          </div>`;
+        })}
+        ${sorted.length===0?h`<div class="ins b"><div class="ins-l">No milestones yet</div><p>Switch to Edit view to add your first life event — home, marriage, kids, retirement, and more.</p></div>`:null}
+      </div>
+    </div>`}
+    ${view==='table'&&h`<div class="card">
+      <div class="card-t">Year-by-Year Projection</div><div class="card-s">Every milestone factored in</div>
+      <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Year</th><th>Age</th><th>Events</th><th class="r">Monthly Savings</th><th class="r">One-Time Costs</th><th class="r">Net Worth</th>${inflOn?h`<th class="r">Real NW</th>`:null}</tr></thead>
+        <tbody>${projRows.filter((r,i)=>i%2===0||r.newMs.length>0).map((r,i)=>h`<tr key="${i}" style="${r.newMs.length>0?'background:var(--amber-bg)':''}">
+          <td style="font-weight:700">${r.year}</td>
+          <td style="color:var(--text3)">${r.age}</td>
+          <td style="font-size:11px">${r.newMs.map(m=>h`<span style="margin-right:5px">${MI_ICO[m.cat]||'📌'} ${m.label}</span>`)}</td>
+          <td class="r"><span style="color:${r.effMonthlySav>=0?'var(--green)':'var(--red)'};font-weight:600">${fmt(r.effMonthlySav)}</span></td>
+          <td class="r" style="color:var(--red)">${r.lumpCost>0?`−${fmt(r.lumpCost)}`:'—'}</td>
+          <td class="r"><span style="color:${r.nomNW>=0?'var(--green)':'var(--red)'};font-weight:700">${fmt(r.nomNW)}</span></td>
+          ${inflOn?h`<td class="r"><span style="color:var(--purple);font-weight:600">${fmt(r.realNW)}</span></td>`:null}
+        </tr>`)}
+        </tbody>
+      </table></div>
+      <div class="fn">Monthly Savings = Base Annual Savings ÷ 12 + sum of monthly deltas from all past milestones. Lump costs reduce portfolio in their year. ${inflOn?`Real = Nominal ÷ (1+${ir})^years.`:''}</div>
+    </div>`}
+    ${view==='edit'&&h`<div class="card">
+      <div class="card-h">
+        <div><div class="card-t">Edit Milestones</div><div class="card-s">Life events and their financial impact</div></div>
+        <button class="btn btn-ghost btn-sm" onClick=${()=>upd({timeline:[...d.timeline,{id:nid(),year:curYear+5,label:'New Event',cost:0,monthlyDelta:0,cat:'life'}]})}>+ Add</button>
+      </div>
+      <div class="ins b" style="margin-bottom:14px"><div class="ins-l">How to fill this in</div><p><strong>One-time cost:</strong> lump sum in that year (e.g. $60k home down payment removes that from your portfolio). <strong>Monthly Δ:</strong> permanent change to spending after this event (e.g. +$800 for mortgage vs rent, +$1,400 for daycare, −$400 when car paid off).</p></div>
+      <div class="stack" style="gap:0">
+        ${sorted.map(m=>h`<div key="${m.id}" style="padding:12px 0;border-bottom:1px solid var(--border)">
+          <div style="display:grid;grid-template-columns:60px 1fr 90px 28px;gap:8px;align-items:end;margin-bottom:8px">
+            <div class="field"><label class="lbl">Year</label><input class="inp" type="number" value="${m.year}" onInput=${e=>upd({timeline:d.timeline.map(x=>x.id===m.id?{...x,year:e.target.value}:x)})}/></div>
+            <div class="field"><label class="lbl">Event Name</label><input class="inp" value="${m.label}" onInput=${e=>upd({timeline:d.timeline.map(x=>x.id===m.id?{...x,label:e.target.value}:x)})}/></div>
+            <div class="field"><label class="lbl">Category</label><select class="inp" value="${m.cat}" onChange=${e=>upd({timeline:d.timeline.map(x=>x.id===m.id?{...x,cat:e.target.value}:x)})}>
+              ${MI_CATS.map(c=>h`<option value="${c}">${MI_ICO[c]} ${c}</option>`)}
+            </select></div>
+            <button class="btn-del" onClick=${()=>upd({timeline:d.timeline.filter(x=>x.id!==m.id)})}>✕</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-left:8px">
+            <div class="field"><label class="lbl">One-Time Cost ($)</label><div class="inp-p"><span class="inp-ps">$</span><input class="inp" type="number" value="${m.cost}" onInput=${e=>upd({timeline:d.timeline.map(x=>x.id===m.id?{...x,cost:e.target.value}:x)})}/></div></div>
+            <div class="field"><label class="lbl">Monthly Δ (+/−)</label><div class="inp-p"><span class="inp-ps">$</span><input class="inp" type="number" value="${m.monthlyDelta}" onInput=${e=>upd({timeline:d.timeline.map(x=>x.id===m.id?{...x,monthlyDelta:e.target.value}:x)})}/></div></div>
+          </div>
+        </div>`)}
+      </div>
+    </div>`}
+  </div>`;
+}
+
+// ─── CHATBOT ──────────────────────────────────────────────────────────────────
+function Chatbot({d,budget,prices}){
+  const[open,setOpen]=useState(false);
+  const[msgs,setMsgs]=useState([{role:'ai',text:`Hi ${d.name}! 👋 I'm your AI financial assistant — I have access to all your data.\n\nTry asking: "Am I saving enough?", "How can I reduce taxes?", "What if I buy a house?"\n\n⚠️ I provide general educational information only — not personalized financial advice.`}]);
+  const[inp,setInp]=useState('');
+  const[loading,setLoading]=useState(false);
+  const endRef=useRef(null);
+  useEffect(()=>{endRef.current?.scrollIntoView({behavior:'smooth'})},[msgs]);
+  const getP=hh=>prices[hh.ticker?.toUpperCase()]?.price||num(hh.price);
+  const allH=d.accounts.flatMap(a=>a.holdings);
+  const totPort=allH.reduce((s,hh)=>s+num(hh.shares)*getP(hh),0);
+  const ctx=`User data: Name:${d.name}, Age:${d.age}, Filing:${d.filingStatus}, Gross:${fmt(budget.gross)}, Net:${fmt(budget.netAnnual/12)}/mo, Savings:${fmt(budget.annualSavings)} (${pct(budget.savingsRate)}), Tax:${fmt(budget.totalTax)} eff:${pct(budget.effective)} marg:${pct(budget.marginal)}, Portfolio:${fmt(totPort)}, Accounts:${d.accounts.length}, RetireAt:${d.retireAge}, Liabilities:${fmt(d.liabilities.reduce((s,l)=>s+num(l.balance),0))}, Milestones:${d.timeline.map(m=>`${m.year}:${m.label}`).join(',')}`;
+  const send=async()=>{
+    if(!inp.trim()||loading)return;
+    const q=inp.trim();setInp('');
+    setMsgs(m=>[...m,{role:'user',text:q},{role:'ai',text:'',loading:true}]);
+    setLoading(true);
+    try{
+      const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:`You are a financial education assistant in a personal finance app. Be helpful and specific using the user's data. Always note you're providing general educational info, not professional advice. Keep responses to 3-4 sentences max for mobile readability.\n\n${ctx}\n\nQuestion: ${q}`}]})});
+      const data=await res.json();
+      const reply=data.content?.[0]?.text||"Couldn't process that — try again.";
+      setMsgs(m=>m.map((x,i)=>i===m.length-1?{role:'ai',text:reply}:x));
+    }catch{
+      setMsgs(m=>m.map((x,i)=>i===m.length-1?{role:'ai',text:'Connection issue. Please try again.'}:x));
+    }
+    setLoading(false);
+  };
+  return h`<>
+    <button class="chat-fab" onClick=${()=>setOpen(o=>!o)} title="Ask your AI assistant">${open?'✕':'💬'}</button>
+    ${open&&h`<div class="chat-panel">
+      <div class="chat-head">
+        <div class="chat-ht"><span style="background:var(--green);border-radius:4px;padding:1px 5px;font-size:9px">AI</span> Financial Assistant</div>
+        <button class="chat-hc" onClick=${()=>setOpen(false)}>✕</button>
+      </div>
+      <div class="chat-msgs">
+        ${msgs.map((m,i)=>h`<div key="${i}" class="${`msg ${m.role}${m.loading?' loading':''}`}">${m.loading?'Thinking…':m.text}</div>`)}
+        <div ref=${endRef}/>
+      </div>
+      <div class="chat-inp-row">
+        <input class="chat-inp" placeholder="Ask a question…" value="${inp}" onInput=${e=>setInp(e.target.value)} onKeyDown=${e=>e.key==='Enter'&&send()} disabled="${loading}"/>
+        <button class="chat-send" onClick=${send} disabled="${loading||!inp.trim()}">→</button>
+      </div>
+    </div>`}
+  </>`;
+}
+
+// ─── SEARCH BAR ───────────────────────────────────────────────────────────────
+function SearchBar({d,setTab}){
+  const[q,setQ]=useState('');const[show,setShow]=useState(false);
+  const ref=useRef(null);
+  useEffect(()=>{const h=e=>{if(ref.current&&!ref.current.contains(e.target))setShow(false)};document.addEventListener('mousedown',h);return()=>document.removeEventListener('mousedown',h)},[]);
+  const idx=useMemo(()=>{
+    const items=[];
+    d.accounts.forEach(a=>{
+      items.push({title:a.name,sub:a.type,tab:'investments'});
+      a.holdings.forEach(hh=>{if(hh.ticker)items.push({title:hh.ticker,sub:hh.name+' · '+a.name,tab:'investments'})});
+    });
+    d.expenses.forEach(e=>items.push({title:e.label,sub:ECATS.find(c=>c.id===e.cat)?.label+' · '+fmt(e.amount)+'/mo',tab:'budget'}));
+    d.incomes.forEach(i=>items.push({title:i.label,sub:'Income · '+fmt(i.amount)+'/yr',tab:'budget'}));
+    d.liabilities.forEach(l=>items.push({title:l.label,sub:'Debt · '+fmt(l.balance),tab:'networth'}));
+    d.timeline.forEach(m=>items.push({title:m.label,sub:m.year+' · '+m.cat,tab:'timeline'}));
+    return items;
+  },[d]);
+  const results=q.length>1?idx.filter(i=>i.title.toLowerCase().includes(q.toLowerCase())||i.sub.toLowerCase().includes(q.toLowerCase())).slice(0,8):[];
+  return h`<div class="sw" ref=${ref}>
+    <span class="s-ico">🔍</span>
+    <input class="si" placeholder="Search…" value="${q}" onInput=${e=>{setQ(e.target.value);setShow(true)}} onFocus=${()=>setShow(true)}/>
+    ${show&&results.length>0&&h`<div class="sr">${results.map((r,i)=>h`<div key="${i}" class="sri" onClick=${()=>{setTab(r.tab);setShow(false);setQ('')}}>
+      <div class="sri-t">${r.title}</div><div class="sri-s">${r.sub}</div>
+    </div>`)}</div>`}
+  </div>`;
+}
+
+// ─── MAIN APP ─────────────────────────────────────────────────────────────────
+const TABS=[
+  {id:'overview',icon:'📊',label:'Overview',short:'Home'},
+  {id:'budget',icon:'💰',label:'Budget',short:'Budget'},
+  {id:'taxes',icon:'📋',label:'Taxes 2026',short:'Taxes'},
+  {id:'investments',icon:'📈',label:'Investments',short:'Invest'},
+  {id:'networth',icon:'💎',label:'Net Worth',short:'Worth'},
+  {id:'timeline',icon:'🗺',label:'Life Timeline',short:'Timeline'},
+];
+
+function App(){
+  const[profile,setProfile]=useState(null);
+  const[tab,setTab]=useState('overview');
+  const[prices,setPrices]=useState({});
+  const[inflOn,setInflOn]=useState(false);
+  const[mobNavOpen,setMobNavOpen]=useState(false);
+  useEffect(()=>{
+    const last=localStorage.getItem('sf_v4_last');
+    if(last){const ps=loadP();if(ps[last])setProfile(ps[last]);}
+  },[]);
+  const login=p=>{setProfile(p);localStorage.setItem('sf_v4_last',p.id)};
+  const logout=()=>{setProfile(null);localStorage.removeItem('sf_v4_last')};
+  const upd=useCallback(patch=>{
+    setProfile(prev=>{
+      const next={...prev,data:{...prev.data,...patch}};
+      const ps=loadP();ps[prev.id]=next;saveP(ps);
+      return next;
+    });
+  },[]);
+  const d=profile?.data;
+  const budget=useMemo(()=>d?calcBudget(d):{w2:0,se:0,passive:0,gross:0,pre401k:0,tradIRA:0,hsaDed:0,seDed:0,slIntDed:0,agi:0,stdDed:15000,itemDed:0,ded:15000,credits:0,taxable:0,fedTax:0,fica:{ss:0,med:0,addl:0,total:0},stateTax:0,totalTax:0,netAnnual:0,retMonthly:0,expMonthly:0,debtPmt:0,annualSavings:0,savingsRate:0,marginal:.22,effective:0},[
+    d?.incomes,d?.bonus,d?.retirement,d?.filingStatus,d?.stateRate,d?.expenses,d?.itemize,d?.deductions,d?.credits,d?.liabilities
+  ]);
+  const inflRate=parseFloat(d?.inflationRate||3);
+  if(!profile)return h`<${AuthScreen} onLogin=${login}/>`;
+  const PAGE_TITLES={overview:'Overview',budget:'Budget & Expenses',taxes:'Tax Estimator — 2026',investments:'Investments',networth:'Net Worth',timeline:'Life Timeline'};
+  return h`<div class="app-shell">
+    <!-- MOBILE HEADER -->
+    <div class="mob-header">
+      <div class="mob-brand">SimpliFinance</div>
+      <button class="mob-menu" onClick=${()=>setMobNavOpen(o=>!o)}>☰</button>
+    </div>
+    <!-- SIDEBAR OVERLAY -->
+    <div class="${`nav-overlay${mobNavOpen?' show':''}`}" onClick=${()=>setMobNavOpen(false)}/>
+    <!-- DESKTOP/MOBILE SIDEBAR -->
+    <div class="desktop-shell">
+      <aside class="${`sidebar${mobNavOpen?' open':''}`}">
+        <div class="sb-brand"><div class="sb-name">SimpliFinance</div><div class="sb-tag">Your financial OS</div></div>
+        <nav class="sb-nav">
+          ${TABS.map(t=>h`<button key="${t.id}" class="${`ni${tab===t.id?' on':''}`}" onClick=${()=>{setTab(t.id);setMobNavOpen(false)}}><span class="ni-ico">${t.icon}</span>${t.label}</button>`)}
+        </nav>
+        <div class="sb-foot">
+          <div class="user-row" onClick=${logout} title="Sign out">
+            <div class="uav">${d.name[0].toUpperCase()}</div>
+            <div><div class="uname">${d.name}</div><div class="uhint">Tap to sign out</div></div>
+          </div>
+        </div>
+      </aside>
+      <div class="main-area">
+        <div class="topbar">
+          <div class="tb-title">${PAGE_TITLES[tab]}</div>
+          <button class="${`infl-btn${inflOn?' on':''}`}" onClick=${()=>setInflOn(v=>!v)}>
+            <span class="infl-dot"/>
+            ${inflOn?`Inflation ON`:' Inflation Adj'}
+          </button>
+          ${inflOn?h`<input class="infl-rate-input" type="number" value="${d.inflationRate||3}" onInput=${e=>upd({inflationRate:e.target.value})} placeholder="3"/>`:null}
+          ${h`<${SearchBar} d=${d} setTab=${setTab}/>`}
+        </div>
+        <div class="page">
+          ${tab==='overview'&&h`<${Overview} d=${d} budget=${budget} prices=${prices} inflOn=${inflOn} inflRate=${inflRate}/>`}
+          ${tab==='budget'&&h`<${BudgetTab} d=${d} upd=${upd} budget=${budget}/>`}
+          ${tab==='taxes'&&h`<${TaxTab} d=${d} budget=${budget} prices=${prices}/>`}
+          ${tab==='investments'&&h`<${InvestTab} d=${d} upd=${upd} prices=${prices} setPrices=${setPrices} budget=${budget}/>`}
+          ${tab==='networth'&&h`<${NetWorthTab} d=${d} budget=${budget} prices=${prices} inflOn=${inflOn} inflRate=${inflRate}/>`}
+          ${tab==='timeline'&&h`<${TimelineTab} d=${d} upd=${upd} budget=${budget} prices=${prices} inflOn=${inflOn} inflRate=${inflRate}/>`}
+        </div>
+      </div>
+    </div>
+    <!-- MOBILE BOTTOM NAV -->
+    <div class="bottom-nav">
+      <div class="bnav">
+        ${TABS.map(t=>h`<button key="${t.id}" class="${`bni${tab===t.id?' on':''}`}" onClick=${()=>setTab(t.id)}>
+          <span class="bni-ico">${t.icon}</span>
+          <span>${t.short}</span>
+        </button>`)}
+      </div>
+    </div>
+    ${h`<${Chatbot} d=${d} budget=${budget} prices=${prices}/>`}
+  </div>`;
+}
+
+render(h(App,null), document.getElementById('root'));
+</script>
+</body>
+</html>
